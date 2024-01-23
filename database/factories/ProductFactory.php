@@ -18,7 +18,7 @@ class ProductFactory extends Factory
     {
             return [
                 'product_name' => \Faker\Factory::create()->unique()->word,
-                'brand' => \Faker\Factory::create()->unique()->company,
+                'brand' => \Faker\Factory::create()->company,
                 'description' => \Faker\Factory::create()->sentence(),
                 'quantity' => \Faker\Factory::create()->randomNumber(),
                 'product_price' => \Faker\Factory::create()->randomFloat(2, 0, 1000),

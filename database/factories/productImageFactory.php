@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Category>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ProductImage>
  */
-class CategoryFactory extends Factory
+class ProductImageFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,11 +17,8 @@ class CategoryFactory extends Factory
     public function definition(): array
     {
         return [
-            'category_name' => $this->faker->word,
-            'description' => $this->faker->sentence,
             'image' => $this->faker->imageUrl(),
-            'created_at' => now(),
-            'updated_at' => now(),
+            'image_type' => $this->faker->randomElement(['jpg', 'png', 'gif']),
         ];
     }
 }
