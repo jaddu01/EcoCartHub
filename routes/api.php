@@ -24,11 +24,23 @@ Route::get('/', [AuthController::class, 'index']);
 Route::get('/register', [AuthController::class, 'register']);
 Route::get('/login', [AuthController::class, 'login']);
 
-//products
-Route::get('/products', [ProductController::class, 'index']);
-Route::get('/productInfo', [ProductController::class, 'productInfo']);
+// //products
+// Route::get('/products', [ProductController::class, 'index']);
+// Route::get('/productInfo', [ProductController::class, 'productInfo']);
 
 //users
-Route::get('/getUsers',[UserController::class,'index']);
-Route::get('/getUser/{userId}', [UserController::class, 'getUserById']);
-Route::get('/usersAddresses',[UserController::class,'usersWithAddresses']);
+// Route::get('/users/getUsers',[UserController::class,'index']);
+// Route::get('/users/getUser/{userId}', [UserController::class, 'getUserById']);
+// Route::get('/users/usersAddresses',[UserController::class,'usersWithAddresses']);
+
+//groups
+Route::prefix('users')->group(function(){
+    Route::get('/', [UserController::class, 'index']);
+    Route::get('/{userId}', [UserController::class, 'getUserById']);
+    Route::get('/{user_id}/addresses', [UserController::class, 'usersWithAddresses']);
+});
+
+Route::prefix('products')->group(function(){
+    Route::get('/', [ProductController::class, 'index']);
+    Route::post('/store', [ProductController::class, 'store']);
+});

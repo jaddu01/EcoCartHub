@@ -28,10 +28,10 @@ class UserController extends Controller
         return response()->json($user);
     }
 
-    public function usersWithAddresses(){
-        $usersWithAddresses = User::with('addresses')->get();
-
-        return response()->json($usersWithAddresses);
+    public function usersWithAddresses($userId){
+        $user = User::find($userId);
+        $addresses = $user->addresses;
+        return response()->json($addresses);
     }
 
 }
