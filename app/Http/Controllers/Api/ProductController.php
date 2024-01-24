@@ -14,4 +14,16 @@ class ProductController extends Controller
         $products = $category->products;
         return response()->json($products);
     }
+
+    public function productInfo()
+{
+    $category = Category::find(2);
+
+
+    $products = $category->products()->select( 'product_name', 'brand',
+    'description', 'quantity', 'product_price', 'color')->get();
+
+    return response()->json($products);
+}
+
 }

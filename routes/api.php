@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ProductController;
 use Illuminate\Http\Request;
@@ -26,3 +26,9 @@ Route::get('/login', [AuthController::class, 'login']);
 
 //products
 Route::get('/products', [ProductController::class, 'index']);
+Route::get('/productInfo', [ProductController::class, 'productInfo']);
+
+//users
+Route::get('/getUsers',[UserController::class,'index']);
+Route::get('/getUser/{userId}', [UserController::class, 'getUserById']);
+Route::get('/usersAddresses',[UserController::class,'usersWithAddresses']);
