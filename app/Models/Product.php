@@ -8,8 +8,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
+    protected $fillable = ['product_name', 'brand', 'description', 'quantity', 'product_price', 'color'];
+    // protected $guarded = [];
 
     public function images(){
 

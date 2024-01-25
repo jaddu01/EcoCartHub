@@ -43,7 +43,13 @@ Route::prefix('users')->group(function(){
 
 Route::prefix('products')->group(function(){
     Route::get('/', [ProductController::class, 'index']);
+    Route::get('/{product_id}', [ProductController::class, 'details']);
     Route::post('/store', [ProductController::class, 'store']);
+    Route::post('{product_id}/update', [ProductController::class, 'update']);
+    Route::delete('{product_id}/delete', [ProductController::class, 'delete']);
+
+    //show deleted products
+    Route::get('/deleted/all', [ProductController::class, 'showDeletedProducts']);
 });
 
 

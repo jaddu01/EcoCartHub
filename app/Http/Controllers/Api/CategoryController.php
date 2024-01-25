@@ -26,8 +26,6 @@ public function store(CategoryRequest $request){
     try{
         $validated = $request->validated();
         return response()->json(['message' => 'Category created successfully'], 200);
-
-
     }catch(Exception $e){
         Log::error($e->getMessage());
         return response()->json(['error' => 'Something went wrong'], 500);

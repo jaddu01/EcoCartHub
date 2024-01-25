@@ -19,23 +19,132 @@ class ProductController extends Controller
         return response()->json($products);
     }
 
-    public function productInfo()
-{
-    $category = Category::find(2);
-
-
-    $products = $category->products()->select( 'product_name', 'brand',
-    'description', 'quantity', 'product_price', 'color')->get();
-
-    return response()->json($products);
-}
+    public function details($id){
+        try{
+            //Lazy Loading :- task read about it.
+            $product = Product::with(['images', 'categories'])->find($id);
+            if(!$product){
+                return response()->json(['error' => 'Product not found'], 404);
+            }
+            return response()->json($product);
+        }catch(Exception $e){
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'Something went wrong'], 500);
+        }
+    }
 
 //store
-    public function store(ProductRequest $request){
+    public function store(Request $request){
         try{
-            $validated = $request->validated();
-            return "done";
+            $validator = Validator::make($request->all(), [
+                'product_name' => 'required|min:3|max:50',
+                'brand' => 'required|min:3|max:30',
+                'description' => 'nullable|min:20|max:200',
+                'quantity' => 'required|integer',
+                'product_price' => 'required|numeric',
+                'color' => 'nullable',
+                'category_id' => 'required|integer|exists:categories,id'
+            ],[
+                'category_id.required' => 'The category field is required',
+                'category_id.exists' => 'The selected category does not exist'
+            ]);
+            if($validator->fails()){
+                return response()->json($validator->errors()->first(), 400);
+            }
 
+            // dd($request->all());
+            $input = $request->only(['product_name', 'brand', 'description', 'quantity', 'product_price', 'color']);
+            $product = Product::create($input);
+
+            //save into pivot table
+            $product->categories()->attach($request->category_id);
+
+            return response()->json(['message' => 'Product created successfully'], 200);
+
+        }catch(Exception $e){
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'Something went wrong'], 500);
+        }
+    }
+
+
+    //update
+    public function update(Request $request, $id){
+        try{
+            // dd(request('product_id'));
+            //task:- you have to use unique validation rule to check if the product name is unique
+            $validator = Validator::make($request->all(), [
+                'product_name' => 'required|min:3|max:50',
+                'brand' => 'required|min:3|max:30',
+                'description' => 'nullable|min:20|max:200',
+                'quantity' => 'required|integer',
+                'product_price' => 'required|numeric',
+                'color' => 'nullable',
+                'category_id' => 'required|integer|exists:categories,id'
+            ],[
+                'category_id.required' => 'The category field is required',
+                'category_id.exists' => 'The selected category does not exist'
+            ]);
+
+            if($validator->fails()){
+                return response()->json($validator->errors()->first(), 400);
+            }
+
+            $product = Product::find($id);
+            if(!$product){
+                return response()->json(['error' => 'Product not found'], 404);
+            }
+            $product->product_name = $request->product_name;
+            $product->brand = $request->brand;
+            $product->description = $request->description;
+            $product->quantity = $request->quantity;
+            $product->product_price = $request->product_price;
+            $product->color = $request->color;
+            $product->save();
+
+            //update pivot table
+            //Task:- read the definition and diff between sync, attach and syncWithoutDetaching
+            $product->categories()->sync($request->category_id);
+
+            return response()->json(['message' => 'Product updated successfully'], 200);
+        }catch(Exception $e){
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'Something went wrong'], 500);
+        }
+    }
+
+
+    //delete
+    public function delete($id){
+        try{
+            $product = Product::find($id);
+            if(!$product){
+                return response()->json(['error' => 'Product not found'], 404);
+            }
+            //remove images
+            $product->images()->delete();
+
+            //detach pivot table
+            $product->categories()->detach();
+
+            //delete product
+            $product->delete();
+
+            return response()->json(['message' => 'Product deleted successfully'], 200);
+        }catch(Exception $e){
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'Something went wrong'], 500);
+        }
+    }
+
+
+    //show deleted products
+    public function showDeletedProducts(){
+        try{
+            //onlyTrashed() is a method of softDeletes
+            //withTrashed() is a method of softDeletes
+            $products = Product::onlyTrashed()->get();
+            return response()->json($products);
         }catch(Exception $e){
             Log::error($e->getMessage());
             return response()->json(['error' => 'Something went wrong'], 500);
