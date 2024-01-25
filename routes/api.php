@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ProductController;
@@ -43,4 +44,11 @@ Route::prefix('users')->group(function(){
 Route::prefix('products')->group(function(){
     Route::get('/', [ProductController::class, 'index']);
     Route::post('/store', [ProductController::class, 'store']);
+});
+
+
+Route::prefix('category')->group(function(){
+    Route::get('/',[CategoryController::class,'index']);
+    Route::post('store',[CategoryController::class,'store']);
+
 });
