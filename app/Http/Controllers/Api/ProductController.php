@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
+use App\Http\Resources\ProductResource;
 use App\Models\Category;
 use App\Models\Product;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
@@ -26,7 +28,10 @@ class ProductController extends Controller
             if(!$product){
                 return response()->json(['error' => 'Product not found'], 404);
             }
-            return response()->json($product);
+
+            $product = new ProductResource($product); //single record
+            // $products = ProductResource::collection($product); //for collection/array
+            return response()->json(['product' => $product]);
         }catch(Exception $e){
             Log::error($e->getMessage());
             return response()->json(['error' => 'Something went wrong'], 500);
@@ -37,7 +42,7 @@ class ProductController extends Controller
     public function store(Request $request){
         try{
             $validator = Validator::make($request->all(), [
-                'product_name' => 'required|min:3|max:50',
+                'product_name' => ['required', 'max:30', 'min:3', Rule::unique('products', 'product_name')->whereNull('deleted_at')],
                 'brand' => 'required|min:3|max:30',
                 'description' => 'nullable|min:20|max:200',
                 'quantity' => 'required|integer',
@@ -55,6 +60,15 @@ class ProductController extends Controller
             // dd($request->all());
             $input = $request->only(['product_name', 'brand', 'description', 'quantity', 'product_price', 'color']);
             $product = Product::create($input);
+
+            //store images
+            if($request->hasFile('images')){
+                $images = $request->file('images');
+                foreach($images as $image){
+                    $image->store('products/images');
+                    $product->images()->create(['image' => 'products/images/'.$image->hashName(), 'image_type' => $image->extension()]);
+                }
+            }
 
             //save into pivot table
             $product->categories()->attach($request->category_id);
@@ -74,8 +88,7 @@ class ProductController extends Controller
             // dd(request('product_id'));
             //task:- you have to use unique validation rule to check if the product name is unique
             $validator = Validator::make($request->all(), [
-                'product_name' => 'required|min:3|max:50|unique:products,products_name
-                ,NULL,id,category_id,' . $request->input('category_id'),
+                'product_name' => 'required|min:3|max:50|unique:products,products_name,NULL,id,category_id,' . $request->input('category_id'),
                 'brand' => 'required|min:3|max:30',
                 'description' => 'nullable|min:20|max:200',
                 'quantity' => 'required|integer',
