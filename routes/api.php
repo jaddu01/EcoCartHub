@@ -56,5 +56,8 @@ Route::prefix('products')->group(function(){
 Route::prefix('category')->group(function(){
     Route::get('/',[CategoryController::class,'index']);
     Route::post('store',[CategoryController::class,'store']);
+    Route::post('{category_id}/update', [CategoryController::class, 'update']);
+    Route::delete('{category_id}/delete',[CategoryController::class,'delete']);
+    Route::get('/deleted/all',[CategoryController::class, 'showDeletedCategories']);
 
 });

@@ -74,7 +74,8 @@ class ProductController extends Controller
             // dd(request('product_id'));
             //task:- you have to use unique validation rule to check if the product name is unique
             $validator = Validator::make($request->all(), [
-                'product_name' => 'required|min:3|max:50',
+                'product_name' => 'required|min:3|max:50|unique:products,products_name
+                ,NULL,id,category_id,' . $request->input('category_id'),
                 'brand' => 'required|min:3|max:30',
                 'description' => 'nullable|min:20|max:200',
                 'quantity' => 'required|integer',
@@ -83,7 +84,8 @@ class ProductController extends Controller
                 'category_id' => 'required|integer|exists:categories,id'
             ],[
                 'category_id.required' => 'The category field is required',
-                'category_id.exists' => 'The selected category does not exist'
+                'category_id.exists' => 'The selected category does not exist',
+                'product_name.unique' => 'The product name must be unique within the selected category.'
             ]);
 
             if($validator->fails()){
