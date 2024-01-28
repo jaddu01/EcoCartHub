@@ -23,18 +23,19 @@ class CategoryController extends Controller
 
 
 
-    public function details($id){
-        try{
+    public function details($id)
+    {
+        try {
             //Lazy Loading :- task read about it.
             $category = Category::find($id);
-            if(!$category){
+            if (!$category) {
                 return response()->json(['error' => 'Category not found'], 404);
             }
 
             $category = new CategoryResource($category); //single record
             // $products = ProductResource::collection($product); //for collection/array
             return response()->json(['category' => $category]);
-        }catch(Exception $e){
+        } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => 'Something went wrong'], 500);
         }
@@ -56,23 +57,14 @@ class CategoryController extends Controller
                 return response()->json($validate->errors()->first(), 400);
             }
 
-            $category= Category::create($request->all());
-
-
+            $input = $request->only(['category_name', 'description']);
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
-                    $image->store('category/image');
-                    $category->create(['image' => 'category/image/'.$image->hashName(), 'image_type' => $image->extension()]);
-                }
+                $image->store('category/image');
+                $input['image'] = 'category/image/' . $image->hashName();
+            }
+            $category = Category::create($input);
 
-
-
-
-            if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                    $image->store('category/image');
-                    $category->create(['image' => 'category/image/'.$image->hashName(), 'image_type' => $image->extension()]);
-                }
 
 
 
@@ -84,23 +76,24 @@ class CategoryController extends Controller
     }
 
 
-    public function update(Request $request, $id){
+    public function update(Request $request, $id)
+    {
 
-        try{
-            $validator = validator::make($request->all(),[
+        try {
+            $validator = validator::make($request->all(), [
                 'category_name' => 'required|min:3|max:50',
                 'description' => 'required|min:15|max:150',
                 'image' => 'required|min:10|max:100',
 
             ]);
 
-            if($validator->fails()){
-                return response()->json($validator->errors()->first(),401);
+            if ($validator->fails()) {
+                return response()->json($validator->errors()->first(), 401);
             }
 
-            $category= Category::find($id);
-            if(!$category){
-                return response()->json(['error'=>'Category not found'],403);
+            $category = Category::find($id);
+            if (!$category) {
+                return response()->json(['error' => 'Category not found'], 403);
             }
 
             $category->category_name = $request->category_name;
@@ -109,20 +102,19 @@ class CategoryController extends Controller
             $category->save();
 
             return response()->json(['message' => 'Category updated successfully'], 200);
-
-        }catch(Exception $e){
-         log::error($e->getMessage());
-         return response()->json(['error' => 'Something went wrong'],500);
+        } catch (Exception $e) {
+            log::error($e->getMessage());
+            return response()->json(['error' => 'Something went wrong'], 500);
         }
-
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
 
-        try{
-            $category=Category::find($id);
-            if(!$category){
-                return response()->json(['error'=>'category not found'],405);
+        try {
+            $category = Category::find($id);
+            if (!$category) {
+                return response()->json(['error' => 'category not found'], 405);
             }
 
             $category->products()->detach();
@@ -131,31 +123,24 @@ class CategoryController extends Controller
 
             $category->delete();
 
-            return response()->json(['message'=>'Category deleted successfully'],202);
-
-        }catch(Exception $e){
+            return response()->json(['message' => 'Category deleted successfully'], 202);
+        } catch (Exception $e) {
 
             log::error($e->getMessage());
-            return response()->json(['error'=>'Something went wrong'],406);
-
+            return response()->json(['error' => 'Something went wrong'], 406);
         }
-
     }
 
 
-    public function showDeletedCategories(){
-        try{
+    public function showDeletedCategories()
+    {
+        try {
             $category = Category::onlyTrashed()->get();
             //$category = Category::withTrashed()->get();
             return response()->json($category);
-        }catch(Exception $e){
+        } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => 'Something went wrong'], 500);
         }
     }
-
-
-
-
-
 }
