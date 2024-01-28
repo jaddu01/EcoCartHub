@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Category;
+use App\Http\Resources\CategoryResource;
 use App\Http\Requests\CategoryRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -21,6 +22,25 @@ class CategoryController extends Controller
     }
 
 
+
+    public function details($id){
+        try{
+            //Lazy Loading :- task read about it.
+            $category = Category::find($id);
+            if(!$category){
+                return response()->json(['error' => 'Category not found'], 404);
+            }
+
+            $category = new CategoryResource($category); //single record
+            // $products = ProductResource::collection($product); //for collection/array
+            return response()->json(['category' => $category]);
+        }catch(Exception $e){
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'Something went wrong'], 500);
+        }
+    }
+
+
     public function store(Request $request)
     {
 
@@ -28,7 +48,7 @@ class CategoryController extends Controller
             $validate = validator::make($request->all(), [
                 'category_name' => 'required|min:3|max:50',
                 'description' => 'required|min:15|max:150',
-                'image' => 'required|min:10|max:100',
+                'image' => 'required|min:10|max:500',
 
             ]);
 
@@ -36,7 +56,24 @@ class CategoryController extends Controller
                 return response()->json($validate->errors()->first(), 400);
             }
 
-            Category::create($request->all());
+            $category= Category::create($request->all());
+
+
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                    $image->store('category/image');
+                    $category->create(['image' => 'category/image/'.$image->hashName(), 'image_type' => $image->extension()]);
+                }
+
+
+
+
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                    $image->store('category/image');
+                    $category->create(['image' => 'category/image/'.$image->hashName(), 'image_type' => $image->extension()]);
+                }
+
 
 
             return response()->json(['message' => 'Category created successfully'], 200);

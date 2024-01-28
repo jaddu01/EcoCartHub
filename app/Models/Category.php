@@ -10,7 +10,7 @@ class Category extends Model
 {
     use HasFactory,SoftDeletes;
 
-    protected $fillable =['category_name','description','image'];
+    protected $fillable =['category_name','description','image','image_type'];
 
 
     public function products(){

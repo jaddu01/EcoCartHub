@@ -62,8 +62,8 @@ class ProductController extends Controller
             $product = Product::create($input);
 
             //store images
-            if($request->hasFile('images')){
-                $images = $request->file('images');
+            if($request->hasFile('image')){
+                $images = $request->file('image');
                 foreach($images as $image){
                     $image->store('products/images');
                     $product->images()->create(['image' => 'products/images/'.$image->hashName(), 'image_type' => $image->extension()]);
