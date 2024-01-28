@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\ResponseBuilder;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductResource;
@@ -16,9 +17,18 @@ use Illuminate\Validation\Rule;
 class ProductController extends Controller
 {
     public function index(){
-        $category = Category::find(1);
-        $products = $category->products;
-        return response()->json($products);
+        try{
+            $products = Product::with(['images', 'categories'])->paginate(10);
+
+            $this->response->products = ProductResource::collection($products);
+            // return ResponseBuilder::success($this->response, 'Products fetched successfully', $this->successStatus);
+
+            return ResponseBuilder::successWithPagination($products, $this->response, 'Products fetched successfully', $this->successStatus);
+
+        }catch(Exception $e){
+            Log::error($e->getMessage());
+            return ResponseBuilder::error('Something went wrong', $this->errorStatus);
+        }
     }
 
     public function details($id){
@@ -29,9 +39,13 @@ class ProductController extends Controller
                 return response()->json(['error' => 'Product not found'], 404);
             }
 
-            $product = new ProductResource($product); //single record
+            // $product = new ProductResource($product); //single record
             // $products = ProductResource::collection($product); //for collection/array
-            return response()->json(['product' => $product]);
+
+            $this->response->products = new ProductResource($product);
+            // return response()->json(['product' => $product]);
+
+            return ResponseBuilder::success($this->response, 'Product details fetched successfully', $this->successStatus);
         }catch(Exception $e){
             Log::error($e->getMessage());
             return response()->json(['error' => 'Something went wrong'], 500);
@@ -54,7 +68,9 @@ class ProductController extends Controller
                 'category_id.exists' => 'The selected category does not exist'
             ]);
             if($validator->fails()){
-                return response()->json($validator->errors()->first(), 400);
+                // return response()->json($validator->errors()->first(), 400);
+
+                return ResponseBuilder::error($validator->errors()->first(), $this->validationStatus);
             }
 
             // dd($request->all());
@@ -73,11 +89,15 @@ class ProductController extends Controller
             //save into pivot table
             $product->categories()->attach($request->category_id);
 
-            return response()->json(['message' => 'Product created successfully'], 200);
+            // return response()->json(['message' => 'Product created successfully'], 200);
+
+            return ResponseBuilder::success($this->response, 'Product created successfully', $this->successStatus);
 
         }catch(Exception $e){
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Something went wrong'], 500);
+            // return response()->json(['error' => 'Something went wrong'], 500);
+
+            return ResponseBuilder::error('Something went wrong', $this->errorStatus);
         }
     }
 
