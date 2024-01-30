@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\ResponseBuilder;
 use App\Models\Category;
 use App\Http\Resources\CategoryResource;
 use App\Http\Requests\CategoryRequest;
@@ -29,12 +30,14 @@ class CategoryController extends Controller
             //Lazy Loading :- task read about it.
             $category = Category::find($id);
             if (!$category) {
-                return response()->json(['error' => 'Category not found'], 404);
+                //return response()->json(['error' => 'Category not found'], 404);
+                return ResponseBuilder::error('Category not found', $this->errorStatus);
             }
-
-            $category = new CategoryResource($category); //single record
+            $this->response->products = new CategoryResource($category);
+            //$category = new CategoryResource($category); //single record
             // $products = ProductResource::collection($product); //for collection/array
-            return response()->json(['category' => $category]);
+            //return response()->json(['category' => $category]);
+            return ResponseBuilder::success( $this->response, 'Category fetched successfully', $this->successStatus);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => 'Something went wrong'], 500);
@@ -54,7 +57,8 @@ class CategoryController extends Controller
             ]);
 
             if ($validate->fails()) {
-                return response()->json($validate->errors()->first(), 400);
+                return ResponseBuilder::error($validate->errors()->first(), $this->validationStatus);
+                //return response()->json($validate->errors()->first(), 400);
             }
 
             $input = $request->only(['category_name', 'description']);
@@ -67,11 +71,12 @@ class CategoryController extends Controller
 
 
 
-
-            return response()->json(['message' => 'Category created successfully'], 200);
+            return ResponseBuilder::success($category , 'Category created successfully' , $this->successStatus);
+            //return response()->json(['message' => 'Category created successfully'], 200);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Something went wrong'], 500);
+            //return response()->json(['error' => 'Something went wrong'], 500);
+            return ResponseBuilder::error('Something went wrong', $this->errorStatus);
         }
     }
 
@@ -88,12 +93,12 @@ class CategoryController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json($validator->errors()->first(), 401);
+                return ResponseBuilder::error($validator->errors()->first(), $this->errorStatus);
             }
 
             $category = Category::find($id);
             if (!$category) {
-                return response()->json(['error' => 'Category not found'], 403);
+                return ResponseBuilder::error('Category not found', $this->errorStatus);
             }
 
             $category->category_name = $request->category_name;
@@ -101,10 +106,11 @@ class CategoryController extends Controller
             $category->image = $request->image;
             $category->save();
 
-            return response()->json(['message' => 'Category updated successfully'], 200);
+            return ResponseBuilder::success($category , 'Category updated successfully' , $this->successStatus);
+
         } catch (Exception $e) {
             log::error($e->getMessage());
-            return response()->json(['error' => 'Something went wrong'], 500);
+            return ResponseBuilder::error('Something went wrong', $this->errorStatus);
         }
     }
 
@@ -114,7 +120,7 @@ class CategoryController extends Controller
         try {
             $category = Category::find($id);
             if (!$category) {
-                return response()->json(['error' => 'category not found'], 405);
+                return ResponseBuilder::error('category not found', $this->errorStatus);
             }
 
             $category->products()->detach();
@@ -127,7 +133,7 @@ class CategoryController extends Controller
         } catch (Exception $e) {
 
             log::error($e->getMessage());
-            return response()->json(['error' => 'Something went wrong'], 406);
+            return ResponseBuilder::error('Something went wrong', $this->errorStatus);
         }
     }
 
@@ -137,10 +143,11 @@ class CategoryController extends Controller
         try {
             $category = Category::onlyTrashed()->get();
             //$category = Category::withTrashed()->get();
-            return response()->json($category);
+            return ResponseBuilder::success($category , $this->successStatus);
+
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Something went wrong'], 500);
+            return ResponseBuilder::error('Something went wrong', $this->errorStatus);
         }
     }
 }
