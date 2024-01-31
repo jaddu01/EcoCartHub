@@ -21,9 +21,10 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-Route::get('/', [AuthController::class, 'index']);
-Route::get('/register', [AuthController::class, 'register']);
-Route::get('/login', [AuthController::class, 'login']);
+Route::prefix('auth')->group(function(){
+    Route::post('/register',[AuthController::class,'register']);
+    Route::post('/login',[AuthController::class,'login']);
+});
 
 // //products
 // Route::get('/products', [ProductController::class, 'index']);
@@ -35,30 +36,35 @@ Route::get('/login', [AuthController::class, 'login']);
 // Route::get('/users/usersAddresses',[UserController::class,'usersWithAddresses']);
 
 //groups
-Route::prefix('users')->group(function(){
-    Route::get('/', [UserController::class, 'index']);
-    Route::get('/{userId}', [UserController::class, 'getUserById']);
-    Route::get('/{user_id}/addresses', [UserController::class, 'usersWithAddresses']);
-});
+Route::middleware('auth:api')->group(function(){
+    //logout
+    Route::post('/logout',[AuthController::class,'logout']);
 
-Route::prefix('products')->group(function(){
-    Route::get('/', [ProductController::class, 'index']);
-    Route::get('/{product_id}', [ProductController::class, 'details']);
-    Route::post('/store', [ProductController::class, 'store']);
-    Route::post('{product_id}/update', [ProductController::class, 'update']);
-    Route::delete('{product_id}/delete', [ProductController::class, 'delete']);
+    Route::prefix('users')->group(function(){
+        Route::get('/', [UserController::class, 'index']);
+        Route::get('/{userId}', [UserController::class, 'getUserById']);
+        Route::get('/{user_id}/addresses', [UserController::class, 'usersWithAddresses']);
+    });
 
-    //show deleted products
-    Route::get('/deleted/all', [ProductController::class, 'showDeletedProducts']);
-});
+    Route::prefix('products')->group(function(){
+        Route::get('/', [ProductController::class, 'index']);
+        Route::get('/{product_id}', [ProductController::class, 'details']);
+        Route::post('/store', [ProductController::class, 'store']);
+        Route::post('{product_id}/update', [ProductController::class, 'update']);
+        Route::delete('{product_id}/delete', [ProductController::class, 'delete']);
+
+        //show deleted products
+        Route::get('/deleted/all', [ProductController::class, 'showDeletedProducts']);
+    });
 
 
-Route::prefix('category')->group(function(){
-    Route::get('/',[CategoryController::class,'index']);
-    Route::get('/{category_id}', [CategoryController::class, 'details']);
-    Route::post('store',[CategoryController::class,'store']);
-    Route::post('{category_id}/update', [CategoryController::class, 'update']);
-    Route::delete('{category_id}/delete',[CategoryController::class,'delete']);
-    Route::get('/deleted/all',[CategoryController::class, 'showDeletedCategories']);
+    Route::prefix('category')->group(function(){
+        Route::get('/',[CategoryController::class,'index']);
+        Route::get('/{category_id}', [CategoryController::class, 'details']);
+        Route::post('store',[CategoryController::class,'store']);
+        Route::post('{category_id}/update', [CategoryController::class, 'update']);
+        Route::delete('{category_id}/delete',[CategoryController::class,'delete']);
+        Route::get('/deleted/all',[CategoryController::class, 'showDeletedCategories']);
 
+    });
 });
