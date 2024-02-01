@@ -6,6 +6,7 @@ use App\Helpers\ResponseBuilder;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Models\UserAddress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -38,6 +39,11 @@ class AuthController extends Controller
 
             $user = User::create($input);
 
+            $addresses = $request->get('addresses', []);
+            foreach ($addresses as $address) {
+            $user->addresses()->create($address);
+        }
+
             //log-in user
             $token = $user->createToken('EcoCartHub')->accessToken;
             $this->response->token = $token;
@@ -48,9 +54,10 @@ class AuthController extends Controller
             return ResponseBuilder::success($this->response, "User created successfully.", $this->successStatus);
 
         }catch(\Exception $e){
-            // return $e;
             DB::rollBack();
-            return ResponseBuilder::error("Oops! Something went wrong.", $this->errorStatus);
+            return $e;
+
+            //return ResponseBuilder::error("Oops! Something went wrong.", $this->errorStatus);
         }
     }
 
@@ -73,10 +80,12 @@ class AuthController extends Controller
 
             $user = $request->user();
             $token = $user->createToken('EcoCartHub')->accessToken;
-            $this->response->token = $token;
+            //$this->response->token = $token;
             $this->response->user = new UserResource($user);
 
-            return ResponseBuilder::success($this->response, "User logged in successfully.", $this->successStatus);
+            return ResponseBuilder::successWithToken($token, $this->response, "User logged in successfully.", $this->successStatus);
+
+            //return ResponseBuilder::success($this->response, "User logged in successfully.", $this->successStatus);
         }catch(\Exception $e){
             return ResponseBuilder::error("Oops! Something went wrong.", $this->errorStatus);
         }

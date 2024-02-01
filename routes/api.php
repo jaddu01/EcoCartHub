@@ -43,7 +43,7 @@ Route::middleware('auth:api')->group(function(){
     Route::prefix('users')->group(function(){
         Route::get('/', [UserController::class, 'index']);
         Route::get('/{userId}', [UserController::class, 'getUserById']);
-        Route::get('/{user_id}/addresses', [UserController::class, 'usersWithAddresses']);
+        Route::get('/profile', [UserController::class, 'userWithAddresses']);
     });
 
     Route::prefix('products')->group(function(){
