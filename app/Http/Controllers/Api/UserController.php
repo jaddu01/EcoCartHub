@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\ResponseBuilder;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Models\UserAddress;
 use Illuminate\Http\Request;
@@ -28,14 +30,14 @@ class UserController extends Controller
         return response()->json($user);
     }
 
-    public function userWithAddresses(Request $request){
-        $user = $request->user('api');
-        dd($user);
-        $addresses = $user->addresses;
-        return response()->json($addresses);
+    public function profile(Request $request){
+        try{
+            $user = $request->user('api');
+            $this->response->user = new UserResource($user);
+
+            return ResponseBuilder::success($this->response, "User profile retrieved successfully.", $this->successStatus);
+        }catch(\Exception $e){
+            return ResponseBuilder::error("Oops! Something went wrong.", 500);
+        }
     }
-
-
-
-
 }

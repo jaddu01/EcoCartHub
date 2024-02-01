@@ -36,14 +36,15 @@ Route::prefix('auth')->group(function(){
 // Route::get('/users/usersAddresses',[UserController::class,'usersWithAddresses']);
 
 //groups
-Route::middleware('auth:api')->group(function(){
+Route::middleware('api.verify')->group(function(){
     //logout
     Route::post('/logout',[AuthController::class,'logout']);
+
+    Route::get('/user/profile', [UserController::class, 'profile']);
 
     Route::prefix('users')->group(function(){
         Route::get('/', [UserController::class, 'index']);
         Route::get('/{userId}', [UserController::class, 'getUserById']);
-        Route::get('/profile', [UserController::class, 'userWithAddresses']);
     });
 
     Route::prefix('products')->group(function(){
