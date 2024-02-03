@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Cache;
+use Carbon\Carbon;
+
+
 
 class AuthController extends Controller
 {
@@ -65,15 +69,24 @@ class AuthController extends Controller
     public function login(Request $request){
         try{
             $validator = Validator::make($request->all(), [
-                'email' => 'required|string|email|max:50',
+                'email' => 'required|string|max:50',
                 'password' => 'required|string|min:8|max:50',
+
+
             ]);
 
             if($validator->fails()){
                 return ResponseBuilder::error($validator->errors()->first(), $this->validationStatus);
             }
 
-            $credentials = request(['email', 'password']);
+
+            //$credentials = request(['email', 'password']);
+            if(filter_var($request->email, FILTER_VALIDATE_EMAIL)){
+                $credentials = ['email' => $request->email, 'password' => $request->password];
+            }else{
+                $credentials = ['username' => $request->email, 'password' => $request->password];
+            }
+
             if(!Auth::attempt($credentials)){
                 return ResponseBuilder::error("Invalid credentials.", $this->unAuthStatus);
             }
@@ -101,4 +114,88 @@ class AuthController extends Controller
             return ResponseBuilder::error("Oops! Something went wrong.", $this->errorStatus);
         }
     }
+
+
+
+
+    protected function generateOTP($user)
+    {
+        // Generate a random 6-digit OTP
+        $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+
+        // Store the OTP in the cache for the user
+        Cache::put("otp:{$user->id}", $otp, 5); // Adjust the expiration time as needed
+
+        // You may also want to send the OTP to the user through a notification or another method
+
+        return $otp;
+    }
+
+
+
+
+    public function loginOTP(Request $request)
+    {
+        // Validate the phone number and country code
+        $request->validate([
+            'country_code' => 'required|string|max:5',
+            'phone_number' => 'required|string',
+        ]);
+
+        $user = User::where('country_code', $request->country_code)
+                    ->where('phone_number', $request->phone_number)
+                    ->first();
+
+        if (!$user) {
+            // User not found
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        // Generate and save OTP
+        $otp = $this->generateOTP($user);
+
+        $user->update([
+            'otp' => $otp,
+            'otp_expires_at' => Carbon::now()->addMinutes(config('auth.otp_ttl')),
+        ]);
+
+        // Send OTP (you may implement this part)
+
+        return response()->json(['message' => 'OTP sent successfully','otp'=>$otp]);
+    }
+
+    public function verifyOTP(Request $request)
+{
+
+    $request->validate([
+        'country_code' => 'required|string',
+        'phone_number' => 'required|string',
+        'otp' => 'required|string',
+    ]);
+
+    // Find the user by phone number and country code
+    $user = User::where('country_code', $request->country_code)
+        ->where('phone_number', $request->phone_number)
+        ->first();
+
+    if (!$user) {
+        // User not found
+        return response()->json(['error' => 'User not found'], 404);
+    }
+
+
+    if ($request->otp===$user->otp) {
+        // Clear OTP fields in the user record
+        $user->otp = null;
+        $user->save();
+
+
+        $token = $user->createToken('OTPtoken')->accessToken;
+
+        return response()->json(['message' => 'OTP verified successfully', 'token' => $token]);
+    } else {
+        return response()->json(['error' => 'Invalid OTP'], 401);
+    }
+
+}
 }
