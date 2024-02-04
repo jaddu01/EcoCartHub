@@ -148,7 +148,7 @@ class AuthController extends Controller
 
         if (!$user) {
             // User not found
-            return response()->json(['error' => 'User not found'], 404);
+            return ResponseBuilder::error('User not found', $this->errorStatus);
         }
 
         // Generate and save OTP
@@ -161,7 +161,7 @@ class AuthController extends Controller
 
         // Send OTP (you may implement this part)
 
-        return response()->json(['message' => 'OTP sent successfully','otp'=>$otp]);
+        return ResponseBuilder::success($otp,'OTP sent successfully', $this->successStatus);
     }
 
     public function verifyOTP(Request $request)
@@ -180,7 +180,7 @@ class AuthController extends Controller
 
     if (!$user) {
         // User not found
-        return response()->json(['error' => 'User not found'], 404);
+        return ResponseBuilder::error('User not found', $this->errorStatus);
     }
 
 
@@ -192,9 +192,9 @@ class AuthController extends Controller
 
         $token = $user->createToken('OTPtoken')->accessToken;
 
-        return response()->json(['message' => 'OTP verified successfully', 'token' => $token]);
+        return ResponseBuilder::success($token,'OTP verified successfully', $this->successStatus);
     } else {
-        return response()->json(['error' => 'Invalid OTP'], 401);
+        return ResponseBuilder::error('Invalid OTP', $this->errorStatus);
     }
 
 }

@@ -3,6 +3,8 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\CartController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -69,6 +71,12 @@ Route::middleware('api.verify')->group(function(){
         Route::post('{category_id}/update', [CategoryController::class, 'update']);
         Route::delete('{category_id}/delete',[CategoryController::class,'delete']);
         Route::get('/deleted/all',[CategoryController::class, 'showDeletedCategories']);
+
+    });
+
+
+    Route::prefix('carts')->group(function(){
+        Route::get('/', [CartController::class, 'index']);
 
     });
 });
