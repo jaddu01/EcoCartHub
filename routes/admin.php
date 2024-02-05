@@ -4,7 +4,9 @@ use App\Http\Controllers\Admin\AuthController;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
-Route::get('/', [AuthController::class, 'login'])->name('admin.login');
+Route::get('/', [AuthController::class, 'index'])->name('admin.index');
+
+Route::post('/login', [AuthController::class, 'login'])->name('admin.login');
 
 //dashboard
 Route::get('/dashboard', function () {
