@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\ResponseBuilder;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+
 use App\Models\User;
 use App\Models\UserAddress;
 use Illuminate\Http\Request;
@@ -40,4 +41,6 @@ class UserController extends Controller
             return ResponseBuilder::error("Oops! Something went wrong.", 500);
         }
     }
+
+
 }

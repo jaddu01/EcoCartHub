@@ -4,7 +4,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\CartController;
-
+use App\Models\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -77,6 +77,7 @@ Route::middleware('api.verify')->group(function(){
 
     Route::prefix('carts')->group(function(){
         Route::get('/', [CartController::class, 'index']);
+        Route::get('/cartInfo',[CartController::class,'cartInfo']);
 
     });
 });
