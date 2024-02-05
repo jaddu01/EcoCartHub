@@ -36,13 +36,15 @@ class CartController extends Controller
     try {
         $user= $request->user('api');
 
-        $cart = $user->carts()->with(['user_cart', 'cart_Items.products'])->first();
+        $cart = $user->cart()->with(['user','items'])->first();
 
         if (!$cart) {
             return ResponseBuilder::error( 'Cart not found', $this->errorStatus);
         }
 
-        return ResponseBuilder::success($cart, 'Cart details is successfully returned', $this->successStatus);
+        $this->response->cart = new CartResource($cart);
+
+        return ResponseBuilder::success($this->response, 'Cart details is successfully returned', $this->successStatus);
 
     } catch (Exception $e) {
         Log::error($e->getMessage());
