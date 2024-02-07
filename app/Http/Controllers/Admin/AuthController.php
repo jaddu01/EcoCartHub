@@ -6,12 +6,16 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
 {
     //login
     public function index(){
         $title = "Login | EcocartHub";
+        if(auth()->guard('admin')->check()){
+            return redirect()->route('admin.dashboard');
+        }
         return view('admin.login', compact('title'));
     }
 
@@ -19,7 +23,7 @@ class AuthController extends Controller
     public function login(Request $request){
         try{
             $validator = Validator::make($request->all(), [
-                'email' => 'required|email',
+                'email' => ['required','email', Rule::exists('users', 'email')],
                 'password' => 'required|min:3'
             ]);
 
@@ -29,7 +33,7 @@ class AuthController extends Controller
             }
 
             //admin guard
-            if(!auth()->guard('admin')->attempt(['email' => $request->email, 'password' => $request->password])){
+            if(!auth()->guard('admin')->attempt(['email' => $request->email, 'password' => $request->password, 'role' => 'admin'])){
                 Session::flash('error', 'Invalid login details');
                 return redirect()->back()->with('error', 'Invalid login details');
             }
