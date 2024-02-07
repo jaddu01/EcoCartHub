@@ -93,12 +93,12 @@ class CartController extends Controller
     }
 
 
-    public function removeItem(Request $request, $itemId) {
+    public function deleteItem(Request $request, $itemId) {
         try {
             $user = $request->user('api');
             $cart = $user->cart;
-
-            $item = $cart->items()->findOrFail($itemId);
+            //dd($user);
+            $item = $cart->items()->find($itemId);
 
             if ($item->quantity > 1) {
                 $item->decrement('quantity');

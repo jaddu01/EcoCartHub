@@ -78,7 +78,7 @@ Route::middleware('api.verify')->group(function(){
     Route::prefix('carts')->group(function(){
         Route::get('/', [CartController::class, 'index']);
         Route::get('/cartInfo',[CartController::class,'cartInfo']);
-        Route::delete('{itemId}/removeItem',[CartController::class,'removeItem']);
+        Route::delete('{itemId}/deleteItem',[CartController::class,'deleteItem']);
         Route::post('{product_id}/addItem',[CartController::class,'addItem']);
 
     });
