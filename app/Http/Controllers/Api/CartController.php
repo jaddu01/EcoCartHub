@@ -51,39 +51,39 @@ class CartController extends Controller
     }
 
     public function addItem(Request $request, $productId){
-
         try{
             $user= $request->user('api');
-            $cart = $user->cart();
-
+            $cart = $user->cart;
+            // dd($cart);
             if(!$cart){
                 $cart = Cart::create(['user_id'=>$user->id,'status'=>'active']);
             }
 
+
+
             $product= Product::find($productId);
+
             if(!$product){
                 return ResponseBuilder::error('Product not found', $this->errorStatus);
             }
-            $price= $product->price;
+            $price= $product->product_price;
 
             $existingItem = $cart->items()->where('product_id', $productId)->first();
 
             if($existingItem){
                 $existingItem->increment('quantity');
                 $existingItem->update(['price'=> $price * $existingItem->quantity]);
+            }else{
+                $items = [
+                    'product_id' => $productId,
+                    'quantity' => 1,
+                    'price' => $price
+                ];
 
+                $cart->items()->create($items);
             }
-            else{
-                $cartItem= CartItem::create([
-                    'cart_id'=> $cart->id,
-                    'product_id'=> $productId,
-                    'quantity'=> 1, //initial value (:
-                    'price'=> $price
-
-                ]);
-            }
-
-            return ResponseBuilder::success($cartItem,'Item added to the cart successfully',$this->successStatus);
+            $this->response->cart = new CartResource($cart);
+            return ResponseBuilder::success($this->response, 'Item added to the cart successfully',$this->successStatus);
 
         }catch(Exception $e){
 
