@@ -1,18 +1,17 @@
 <?php
 
-use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\{AuthController,DashboardController};
 use Illuminate\Support\Facades\Route;
-use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 Route::get('/', [AuthController::class, 'index'])->name('admin.index');
 
 Route::post('/login', [AuthController::class, 'login'])->name('admin.login');
 
 //dashboard
-Route::get('/dashboard', function () {
-    return view('admin.dashboard');
-})->name('admin.dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
 Route::get('/users',function(){
     return view('admin.users');
 })->name('admin.user');
+
+Route::get('logout', [AuthController::class, 'logout'])->name('admin.logout');

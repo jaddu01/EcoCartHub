@@ -44,4 +44,15 @@ class AuthController extends Controller
         }
 
     }
+
+    //logout
+    public function logout(Request $request){
+        try{
+            auth()->guard('admin')->logout();
+            Session::flash('success', 'You have been logged out successfully');
+            return redirect()->route('admin.index');
+        }catch(\Exception $e){
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
 }
