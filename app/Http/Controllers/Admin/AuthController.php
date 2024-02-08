@@ -23,7 +23,7 @@ class AuthController extends Controller
     public function login(Request $request){
         try{
             $validator = Validator::make($request->all(), [
-                'email' => ['required','email', Rule::exists('users', 'email')],
+                'email' => ['required','email', Rule::exists('admins', 'email')],
                 'password' => 'required|min:3'
             ]);
 
@@ -33,7 +33,7 @@ class AuthController extends Controller
             }
 
             //admin guard
-            if(!auth()->guard('admin')->attempt(['email' => $request->email, 'password' => $request->password, 'role' => 'admin'])){
+            if(!auth()->guard('admin')->attempt(['email' => $request->email, 'password' => $request->password])){
                 Session::flash('error', 'Invalid login details');
                 return redirect()->back()->with('error', 'Invalid login details');
             }
