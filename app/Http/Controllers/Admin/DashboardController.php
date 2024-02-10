@@ -13,23 +13,27 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    public function index(Request $request){
-        try{
+    public function index(Request $request)
+    {
+        try {
             $users = User::count();
-            $products = Product::count();
 
-            $admin = Auth::guard('admin')->user();
-        $adminName = $admin->first_name . ' ' . $admin->last_name;
+            $products = $this->product();
 
-        $product = Product::first();
-        $productName = $product->product_name;
-        $quantity = $product->quantity;
-
-        return view('admin.dashboard', compact('users', 'products', 'adminName','productName','quantity'));
-        }catch(Exception $e){
+            $totalProducts = Product::count();
+            return view('admin.dashboard', compact('users', 'totalProducts', 'products'));
+        } catch (Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
-//
+    public function product()
+    {
+        $AllProducts = collect(Product::get());
+        $products = $AllProducts->take(10);
+
+        return $products;
+    }
+
+    //
 }

@@ -15,7 +15,7 @@
                 <img src="{{ asset('assets/admin/dist/img/user2-160x160.jpg') }}" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="{{ route('admin.user') }}" class="d-block">{{ $adminName }}
+                <a href="{{ route('admin.users') }}" class="d-block">{{ auth('admin')->user()->first_name ?? "John Doe" }}
 
                 </a>
             </div>
@@ -37,7 +37,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ route('admin.user') }}" class="nav-link">
+                    <a href="{{ route('admin.users') }}" class="nav-link">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
                             Users
