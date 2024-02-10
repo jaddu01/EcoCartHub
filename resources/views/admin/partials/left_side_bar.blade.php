@@ -15,7 +15,9 @@
                 <img src="{{ asset('assets/admin/dist/img/user2-160x160.jpg') }}" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="#" class="d-block">Abdullah Omar</a>
+                <a href="{{ route('admin.user') }}" class="d-block">{{ $adminName }}
+
+                </a>
             </div>
         </div>
 

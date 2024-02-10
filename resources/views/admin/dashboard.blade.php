@@ -102,17 +102,17 @@
                                             <th>Order ID</th>
                                             <th>Item</th>
                                             <th>Status</th>
-                                            <th>Popularity</th>
+                                            <th>Quantity</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td><a href="pages/examples/invoice.html">OR9842</a></td>
-                                            <td>Call of Duty IV</td>
+                                            <td><a href="{{ route('admin.user') }}">OR9842</a></td>
+                                            <td>{{ $productName }}</td>
                                             <td><span class="badge badge-success">Shipped</span></td>
                                             <td>
                                                 <div class="sparkbar" data-color="#00a65a" data-height="20">
-                                                    90,80,90,-70,61,-83,63</div>
+                                                    {{ $quantity }}</div>
                                             </td>
                                         </tr>
                                         <tr>

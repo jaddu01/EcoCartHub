@@ -9,6 +9,11 @@ Route::post('/login', [AuthController::class, 'login'])->name('admin.login');
 
 //dashboard
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+Route::get('/product', [DashboardController::class, 'product'])->name('admin.product');
+
+
+
+
 
 Route::get('/users',function(){
     return view('admin.users');
