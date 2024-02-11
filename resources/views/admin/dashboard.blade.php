@@ -40,7 +40,9 @@
 
                         <div class="info-box-content">
                             <span class="info-box-text">Total Products</span>
+                            <a href="{{ route('admin.products') }}" class="nav-link">
                             <span class="info-box-number">{{ $totalProducts }}</span>
+                            </a>
                         </div>
                         <!-- /.info-box-content -->
                     </div>

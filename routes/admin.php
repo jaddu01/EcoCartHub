@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Admin\{AuthController,DashboardController, UsersController};
+use App\Http\Controllers\Admin\{AuthController,DashboardController, UsersController,ProductController,CategoryController};
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [AuthController::class, 'index'])->name('admin.index');
@@ -10,7 +10,18 @@ Route::post('/login', [AuthController::class, 'login'])->name('admin.login');
 Route::middleware('admin.auth')->group(function(){
     //dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-    Route::get('/product', [DashboardController::class, 'product'])->name('admin.product');
+
+
+
+    Route::prefix('product')->group(function(){
+        Route::get('/', [ProductController::class, 'index'])->name('admin.products');
+    });
+
+    Route::prefix('category')->group(function(){
+        Route::get('/', [CategoryController::class, 'index'])->name('admin.categories');
+    });
+
+
 
     Route::prefix('users')->group(function(){
         Route::get('/', [UsersController::class, 'index'])->name('admin.users');
