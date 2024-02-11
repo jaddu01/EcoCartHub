@@ -35,4 +35,51 @@ class ProductController extends Controller
             return redirect()->back()->with('error',$e->getMessage());
         }
     }
+
+    //edit
+    public function edit($id){
+        $product = Product::find($id);
+        if($product){
+            return view('admin.products.edit',compact('product'));
+        }else{
+            return redirect()->back()->with('error','Product not found');
+        }
+    }
+
+    //update
+    public function update(ProductRequest $request, $id){
+        try{
+            DB::beginTransaction();
+            $product = Product::find($id);
+            if($product){
+                $data = $request->only(['product_name','product_price','description','brand','color','quantity']);
+                $product->update($data);
+                DB::commit();
+                return redirect()->route('admin.products')->with('success','Product updated successfully');
+            }else{
+                return redirect()->back()->with('error','Product not found');
+            }
+        }catch(\Exception $e){
+            DB::rollBack();
+            return redirect()->back()->with('error',$e->getMessage());
+        }
+    }
+
+    //delete
+    public function delete($id){
+        try{
+            DB::beginTransaction();
+            $product = Product::find($id);
+            if($product){
+                $product->delete();
+                DB::commit();
+                return redirect()->route('admin.products')->with('success','Product deleted successfully');
+            }else{
+                return redirect()->back()->with('error','Product not found');
+            }
+        }catch(\Exception $e){
+            DB::rollBack();
+            return redirect()->back()->with('error',$e->getMessage());
+        }
+    }
 }

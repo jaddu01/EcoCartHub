@@ -41,6 +41,7 @@
                                         <th>Quantity</th>
                                         <th>Price</th>
                                         <th>Color</th>
+                                        <th>Action</th>
 
                                     </tr>
                                 </thead>
@@ -53,6 +54,12 @@
                                             <td>{{ $product->quantity }}</td>
                                             <td>{{ $product->product_price }}</td>
                                             <td>{{ $product->color }}</td>
+                                            <td>
+                                                <a href="{{ route('admin.products.edit', $product->id) }}"
+                                                    class="btn btn-primary btn-sm">Edit</a>
+                                                <a href="{{ route('admin.products.delete', $product->id) }}"
+                                                    class="btn btn-danger btn-sm">Delete</a>
+                                            </td>
                                         </tr>
                                     @empty
                                         <tr>
