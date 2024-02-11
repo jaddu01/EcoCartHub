@@ -30,35 +30,50 @@
                         </div>
                         <!-- /.card-header -->
                         <!-- form start -->
-                        <form id="productForm" method="POST" action="{{ route('admin.products.store') }}">
+                        <form id="productForm" name="productForm" method="POST" action="{{ route('admin.products.store') }}">
                             @csrf
                             <div class="card-body">
                                 <div class="form-group">
                                     <label for="productname">Product Name</label>
                                     <input type="text" name="product_name" value="{{ old('product_name') }}" class="form-control" id="productname"
                                         placeholder="Enter Product Name">
+                                    @error('product_name')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                                 <div class="form-group">
                                     <label for="brand">Brand</label>
                                     <input type="text" name="brand" value="{{ old('brand') }}" class="form-control" id="brand"
                                         placeholder="Brand">
+                                    @error('brand')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
 
                                 <div class="form-group">
                                     <label for="description">Description</label>
                                     <textarea name="description" rows="4" class="form-control" id="description" placeholder="Description">{{ old('description') }}</textarea>
+                                    @error('description')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
 
                                 <div class="form-group">
                                     <label for="quantity">Quantity</label>
                                     <input type="text" name="quantity" value="{{ old('quantity') }}" class="form-control" id="quantity"
                                         placeholder="Quantity">
+                                    @error('quantity')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
 
                                 <div class="form-group">
                                     <label for="productPrice">Product Price</label>
                                     <input type="text" name="product_price" value="{{ old('product_price') }}" class="form-control" id="productPrice"
                                         placeholder="Product Price">
+                                    @error('product_price')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
 
                                 <div class="form-group">
@@ -70,6 +85,9 @@
                                         <option value="green">Green</option>
                                         <option value="yellow">Yellow</option>
                                     </select>
+                                    @error('color')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="card-footer">

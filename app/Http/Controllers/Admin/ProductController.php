@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProductRequest;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
@@ -20,18 +22,10 @@ class ProductController extends Controller
     }
 
     //store
-    public function store(Request $request){
+    public function store(ProductRequest $request){
         try{
-            $request->validator([
-                'product_name'=>'required',
-                'product_price'=>'required',
-                'description'=>'required',
-                'brand'=>'required',
-                'color' => 'required',
-            ]);
-            dd($request->all());
             DB::beginTransaction();
-            $data = $request->only(['product_name','product_price','description','brand','color']);
+            $data = $request->only(['product_name','product_price','description','brand','color','quantity']);
 
             Product::create($data);
             DB::commit();
