@@ -50,7 +50,7 @@
                                             <td>{{ $category->id }}</td>
                                             <td>{{ $category->category_name }}</td>
                                             <td>{{ $category->description }}</td>
-                                            <td>{{ $category->image }}</td>
+                                            <td><img src="{{ $category->image }}" height="40" width="40" /></td>
                                             <td>{{ $category->image_type }}</td>
 
                                         </tr>

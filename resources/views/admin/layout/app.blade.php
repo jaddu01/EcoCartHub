@@ -58,7 +58,7 @@
     <!-- AdminLTE for demo purposes -->
     <script src="{{ asset('assets/admin/dist/js/demo.js') }}"></script>
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="{{ asset('assets/admin/dist/js/pages/dashboard2.js') }}"></script>
+    {{-- <script src="{{ asset('assets/admin/dist/js/pages/dashboard2.js') }}"></script> --}}
     @stack('js')
 </body>
 
