@@ -30,7 +30,7 @@
                         </div>
                         <!-- /.card-header -->
                         <!-- form start -->
-                        <form id="productForm" name="productForm" method="POST" action="{{ route('admin.products.update', $product->id) }}">
+                        <form id="productForm" name="productForm" method="POST" action="{{ route('admin.products.update', $product->id) }}" enctype="multipart/form-data">
                             @csrf
                             <div class="card-body">
                                 <div class="form-group">
@@ -88,6 +88,23 @@
                                     @error('color')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
+                                </div>
+                                <div class="form-group">
+                                    <label for="image">Image</label>
+                                    <div class="custom-file">
+                                        <input type="file" name="product_images[]" class="custom-file-input" id="exampleInputFile" multiple>
+                                        <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                                    </div>
+                                    @error('image')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="form-group
+                                    @if($product->images)
+                                        @foreach ($product->images as $image)
+                                            <img src="{{ Storage::url($image->image) }}" class="img-thumbnail" width="100">
+                                        @endforeach
+                                    @endif
                                 </div>
                             </div>
                             <div class="card-footer">

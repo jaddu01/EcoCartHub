@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CategoryRequest;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use Illuminate\Support\Facades\DB;
@@ -17,17 +18,27 @@ class CategoryController extends Controller
     public function create(){
         return view('admin.categories.create');
     }
-    public function store(Request $request){
+    public function store(CategoryRequest $request){
         try{
             DB::beginTransaction();
-            $data = $request->only(['category_name','description','image','image_type']);
+            $data = $request->only(['category_name','description']);
 
+            //upload image to storage
+            if($request->hasFile('category_image')){
+                $image = $request->file('category_image');
+                $image_name = time().'.'.$image->getClientOriginalExtension();
+                $image->store('categories/images');
+                $data['image'] = 'categories/images/'.$image->hashName();
+                // $data['image_type'] = $image->getClientOriginalExtension();
+            }
+            // dd($data);
             Category::create($data);
             DB::commit();
             return redirect()->route('admin.categories')->with('success','category added successfully');
         }catch(\Exception $e){
             DB::rollBack();
-            return redirect()->back()->with('error',$e->getMessage());
+            // dd($e->getMessage());
+            return redirect()->back()->with('error',$e->getMessage())->withInput();
         }
 }
 public function edit($id){
@@ -40,12 +51,21 @@ public function edit($id){
 }
 
 //update
-public function update(Request $request, $id){
+public function update(CategoryRequest $request, $id){
     try{
+        // dd($request->all());
         DB::beginTransaction();
         $category = Category::find($id);
         if($category){
-            $data = $request->only(['category_name','description','image','image_type']);
+            $data = $request->only(['category_name','description']);
+            if($request->hasFile('category_image')){
+                $image = $request->file('category_image');
+                $image_name = time().'.'.$image->getClientOriginalExtension();
+                // dd($image_name);
+                $image->store('categories/images');
+                $data['image'] = 'categories/images/'.$image->hashName();
+            }
+            // dd($data);
             $category->update($data);
             DB::commit();
             return redirect()->route('admin.categories')->with('success','Category updated successfully');
@@ -54,6 +74,7 @@ public function update(Request $request, $id){
         }
     }catch(\Exception $e){
         DB::rollBack();
+        dd($e->getMessage());
         return redirect()->back()->with('error',$e->getMessage());
     }
 }
@@ -64,7 +85,7 @@ public function delete($id){
         DB::beginTransaction();
         $category = Category::find($id);
         if($category){
-            $category->products->delete();
+            $category->products()->delete();
             $category->delete();
             DB::commit();
             return redirect()->route('admin.categories')->with('success','Category deleted successfully');

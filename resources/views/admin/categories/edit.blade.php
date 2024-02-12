@@ -30,7 +30,7 @@
                         </div>
                         <!-- /.card-header -->
                         <!-- form start -->
-                        <form id="CategoryForm" name="CategoryForm" method="POST" action="{{ route('admin.categories.update',$category->id) }}">
+                        <form id="CategoryForm" name="CategoryForm" method="POST" action="{{ route('admin.categories.update',$category->id) }}" enctype="multipart/form-data">
                             @csrf
                             <div class="card-body">
                                 <div class="form-group">
@@ -53,23 +53,18 @@
 
                                 <div class="form-group">
                                     <label for="image">Image</label>
-                                    <input type="text" name="image" value="{{ old('image',$category->image) }}" class="form-control" id="image"
-                                        placeholder="Image">
+                                    <div class="custom-file">
+                                        <input type="file" name="category_image" class="custom-file-input" id="exampleInputFile">
+                                        <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                                    </div>
                                     @error('image')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
-
-                                <div class="form-group">
-                                    <label for="imagetype">Image type</label>
-                                    <input type="text" name="image_type" value="{{ old('image_type',$category->image_type) }}" class="form-control" id="imagetype"
-                                        placeholder="Image type">
-                                    @error('image_type')
-                                        <span class="text-danger">{{ $message }}</span>
-                                    @enderror
+                                {{-- preview image --}}
+                                <div class="form-group id="previewImage">
+                                    <img src="{{ Storage::url($category->image) }}" height="100" width="100" />
                                 </div>
-
-
                             </div>
                             <div class="card-footer">
                                 <button type="submit" class="btn btn-primary">Submit</button>

@@ -56,7 +56,7 @@
                                             <a href="{{ route('admin.categories.edit', $category->id) }}"
                                                 class="btn btn-primary btn-sm">Edit</a>
                                             <a href="{{ route('admin.categories.delete', $category->id) }}"
-                                                class="btn btn-danger btn-sm">Delete</a>
+                                                class="btn btn-danger btn-sm" onclick="return confirm('Are you sure, want to delete this category?')">Delete</a>
                                             </td>
                                         </tr>
                                     @empty

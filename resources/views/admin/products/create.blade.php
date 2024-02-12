@@ -30,7 +30,7 @@
                         </div>
                         <!-- /.card-header -->
                         <!-- form start -->
-                        <form id="productForm" name="productForm" method="POST" action="{{ route('admin.products.store') }}">
+                        <form id="productForm" name="productForm" method="POST" action="{{ route('admin.products.store') }}" enctype="multipart/form-data">
                             @csrf
                             <div class="card-body">
                                 <div class="form-group">
@@ -86,6 +86,16 @@
                                         <option value="yellow">Yellow</option>
                                     </select>
                                     @error('color')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="form-group">
+                                    <label for="image">Image</label>
+                                    <div class="custom-file">
+                                        <input type="file" name="product_images[]" class="custom-file-input" id="exampleInputFile" multiple>
+                                        <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                                    </div>
+                                    @error('image')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>

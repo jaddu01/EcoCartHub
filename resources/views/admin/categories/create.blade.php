@@ -30,13 +30,13 @@
                         </div>
                         <!-- /.card-header -->
                         <!-- form start -->
-                        <form id="CategoryForm" name="CategoryForm" method="POST" action="{{ route('admin.categories.store') }}">
+                        <form id="CategoryForm" name="CategoryForm" method="POST" action="{{ route('admin.categories.store') }}" enctype="multipart/form-data">
                             @csrf
                             <div class="card-body">
                                 <div class="form-group">
                                     <label for="categoryname">Category Name</label>
-                                    <input type="text" name="category_name" value="{{ old('category_name') }}" class="form-control" id="Categoryname"
-                                        placeholder="Enter Category Name">
+                                    <input type="text" name="category_name" value="{{ old('category_name') }}"
+                                        class="form-control" id="Categoryname" placeholder="Enter Category Name">
                                     @error('category_name')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
@@ -53,8 +53,10 @@
 
                                 <div class="form-group">
                                     <label for="image">Image</label>
-                                    <input type="text" name="image" value="{{ old('image') }}" class="form-control" id="image"
-                                        placeholder="Image">
+                                    <div class="custom-file">
+                                        <input type="file" name="category_image" class="custom-file-input" id="exampleInputFile">
+                                        <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                                    </div>
                                     @error('image')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
@@ -62,8 +64,8 @@
 
                                 <div class="form-group">
                                     <label for="imagetype">Image type</label>
-                                    <input type="text" name="image_type" value="{{ old('image_type') }}" class="form-control" id="imagetype"
-                                        placeholder="Image type">
+                                    <input type="text" name="image_type" value="{{ old('image_type') }}"
+                                        class="form-control" id="imagetype" placeholder="Image type">
                                     @error('image_type')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror

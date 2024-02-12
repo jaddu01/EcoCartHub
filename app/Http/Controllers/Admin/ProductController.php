@@ -26,8 +26,16 @@ class ProductController extends Controller
         try{
             DB::beginTransaction();
             $data = $request->only(['product_name','product_price','description','brand','color','quantity']);
+            $product = Product::create($data);
 
-            Product::create($data);
+            //upload images to storage
+            if($request->hasFile('product_images')){
+                $images = $request->file('product_images');
+                foreach($images as $image){
+                    $image->store('products/images');
+                    $product->images()->create(['image' => 'products/images/'.$image->hashName()], ['image_type' => $image->getClientOriginalExtension()]);
+                }
+            }
             DB::commit();
             return redirect()->route('admin.products')->with('success','Product added successfully');
         }catch(\Exception $e){
@@ -38,7 +46,8 @@ class ProductController extends Controller
 
     //edit
     public function edit($id){
-        $product = Product::find($id);
+        $product = Product::with('images')->find($id);
+        // dd($product);
         if($product){
             return view('admin.products.edit',compact('product'));
         }else{
