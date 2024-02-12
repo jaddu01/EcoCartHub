@@ -52,7 +52,12 @@
                                             <td>{{ $category->description }}</td>
                                             <td><img src="{{ $category->image }}" height="40" width="40" /></td>
                                             <td>{{ $category->image_type }}</td>
-
+                                            <td>
+                                            <a href="{{ route('admin.categories.edit', $category->id) }}"
+                                                class="btn btn-primary btn-sm">Edit</a>
+                                            <a href="{{ route('admin.categories.delete', $category->id) }}"
+                                                class="btn btn-danger btn-sm">Delete</a>
+                                            </td>
                                         </tr>
                                     @empty
                                         <tr>
