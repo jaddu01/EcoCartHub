@@ -7,13 +7,12 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
+use Yajra\DataTables\Facades\DataTables;
 
 class UsersController extends Controller
 {
     public function index(Request $request){
-        $users = User::get();
-        return view('admin.users.index', compact('users'));
+        return view('admin.users.index');
     }
 
     public function create(){
@@ -108,6 +107,35 @@ class UsersController extends Controller
     public function profile($id){
         $user = User::with('addresses')->find($id);
         return view('admin.users.profile', compact('users'));
+    }
+
+    public function getUsers(Request $request){
+        $users = User::latest()->get();
+
+        return DataTables::of($users)
+            ->addColumn('first_name', function($user){
+                return '<a href="'.route('admin.users.edit',$user->id).'">'.$user->first_name.'</a>';
+            })
+            ->addColumn('last_name', function($user){
+                return $user->last_name;
+            })
+            ->addColumn('username', function($user){
+                return $user->username;
+            })
+            ->addColumn('email', function($user){
+                return $user->email;
+            })
+            ->addColumn('phone_number', function($user){
+                return $user->country_code.'-'.$user->phone_number;
+            })
+            ->addColumn('action', function($user){
+                return '<a href="'.route('admin.users.edit',$user->id).'" class="btn btn-primary btn-sm">Edit</a>
+                <a href="'.route('admin.users.delete',$user->id).'" class="btn btn-danger btn-sm">Delete</a>
+                <a href="'.route('admin.users.profile',$user->id).'" class="btn btn-info btn-sm">Profile</a>';
+            })
+            ->rawColumns(['action','first_name'])
+            ->make(true);
+
     }
 }
 

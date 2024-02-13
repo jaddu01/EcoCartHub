@@ -42,6 +42,9 @@ Route::middleware('admin.auth')->group(function(){
         Route::post('/update/{id}', [UsersController::class, 'update'])->name('admin.users.update');
         Route::get('/delete/{id}', [UsersController::class, 'delete'])->name('admin.users.delete');
         Route::get('/profile', [UsersController::class, 'profile'])->name('admin.users.profile');
+
+        //from datatable
+        Route::get('/get-users', [UsersController::class, 'getUsers'])->name('admin.users.get-users');
     });
 
     Route::get('logout', [AuthController::class, 'logout'])->name('admin.logout');

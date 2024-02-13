@@ -38,31 +38,11 @@
                                         <th>User Name</th>
                                         <th>Email</th>
                                         <th>Mobile Number</th>
-                                        <th>Action<th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($users as $user)
-                                        <tr>
-                                            <td>{{ $user->first_name }}</td>
-                                            <td>{{ $user->last_name }}</td>
-                                            <td>{{ $user->username }}</td>
-                                            <td>{{ $user->email }}</td>
-                                            <td>{{ $user->country_code.'-'.$user->phone_number }}</td>
-                                            <td>
-                                                <a href="{{ route('admin.users.edit', $user->id) }}"
-                                                    class="btn btn-primary btn-sm">Edit</a>
-                                                <a href="{{ route('admin.users.delete', $user->id) }}"
-                                                    class="btn btn-danger btn-sm" onclick="return confirm('Are you sure, want to delete this product?')">Delete</a>
-                                                    <a href="{{ route('admin.users.profile',$user->id)}}"
-                                                        class="btn btn-primary btn-sm">Profile</a>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="6" class="text-center">No Users Found</td>
-                                        </tr>
-                                    @endforelse
+
                                 </tbody>
                             </table>
                         </div>
@@ -95,13 +75,36 @@
     <script>
         $(function() {
             $('#users').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
+                processing: true,
+                serverSide: true,
+                ajax: "{!! route('admin.users.get-users') !!}",
+                columns: [{
+                        data: 'first_name',
+                        name: 'first_name'
+                    },
+                    {
+                        data: 'last_name',
+                        name: 'last_name'
+                    },
+                    {
+                        data: 'username',
+                        name: 'username'
+                    },
+                    {
+                        data: 'email',
+                        name: 'email'
+                    },
+                    {
+                        data: 'phone_number',
+                        name: 'phone_number'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    }
+                ]
             });
         });
     </script>
