@@ -36,11 +36,12 @@ Route::middleware('admin.auth')->group(function(){
 
     Route::prefix('users')->group(function(){
         Route::get('/', [UsersController::class, 'index'])->name('admin.users');
-        // Route::get('/create', [UsersController::class, 'create'])->name('admin.users.create');
-        // Route::post('/store', [UsersController::class, 'store'])->name('admin.users.store');
-        // Route::get('/edit/{id}', [UsersController::class, 'edit'])->name('admin.users.edit');
-        // Route::post('/update/{id}', [UsersController::class, 'update'])->name('admin.users.update');
-        // Route::get('/delete/{id}', [UsersController::class, 'delete'])->name('admin.users.delete');
+        Route::get('/create', [UsersController::class, 'create'])->name('admin.users.add');
+        Route::post('/store', [UsersController::class, 'store'])->name('admin.users.store');
+        Route::get('/edit/{id}', [UsersController::class, 'edit'])->name('admin.users.edit');
+        Route::post('/update/{id}', [UsersController::class, 'update'])->name('admin.users.update');
+        Route::get('/delete/{id}', [UsersController::class, 'delete'])->name('admin.users.delete');
+        Route::get('/profile', [UsersController::class, 'profile'])->name('admin.users.profile');
     });
 
     Route::get('logout', [AuthController::class, 'logout'])->name('admin.logout');

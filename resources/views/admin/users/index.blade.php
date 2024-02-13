@@ -38,6 +38,7 @@
                                         <th>User Name</th>
                                         <th>Email</th>
                                         <th>Mobile Number</th>
+                                        <th>Action<th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -48,10 +49,18 @@
                                             <td>{{ $user->username }}</td>
                                             <td>{{ $user->email }}</td>
                                             <td>{{ $user->country_code.'-'.$user->phone_number }}</td>
+                                            <td>
+                                                <a href="{{ route('admin.users.edit', $user->id) }}"
+                                                    class="btn btn-primary btn-sm">Edit</a>
+                                                <a href="{{ route('admin.users.delete', $user->id) }}"
+                                                    class="btn btn-danger btn-sm" onclick="return confirm('Are you sure, want to delete this product?')">Delete</a>
+                                                    <a href="{{ route('admin.users.profile',$user->id)}}"
+                                                        class="btn btn-primary btn-sm">Profile</a>
+                                            </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="5" class="text-center">No Users Found</td>
+                                            <td colspan="6" class="text-center">No Users Found</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
