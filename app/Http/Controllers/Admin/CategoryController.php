@@ -7,6 +7,7 @@ use App\Http\Requests\CategoryRequest;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class CategoryController extends Controller
 {
@@ -97,4 +98,25 @@ public function delete($id){
         return redirect()->back()->with('error',$e->getMessage());
     }
 }
-}
+
+    public function getCategories(Request $request){
+        $categories = Category::latest()->get();
+
+        return DataTables::of($categories)
+            ->addColumn('category_name', function($category){
+                return $category->category_name;
+            })
+            ->addColumn('image', function($category){
+                return '<img src="{{ Storage::url($category->image) }}" height="100" width="100" />';
+            })
+            ->addColumn('action', function($category){
+                return '<a href="'.route('admin.categories.edit',$category->id).'" class="btn btn-primary btn-sm">Edit</a>
+                <a href="'.route('admin.categories.delete',$category->id).'" class="btn btn-danger btn-sm">Delete</a>';
+
+            })
+            ->rawColumns(['action','image'])
+            ->make(true);
+
+    }
+    }
+

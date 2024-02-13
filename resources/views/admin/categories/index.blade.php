@@ -35,35 +35,18 @@
                             <table id="products" class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Id</th>
+
                                         <th>Category Name</th>
-                                        <th>Description</th>
                                         <th>Image</th>
-                                        <th>Image type</th>
+                                        <th>Action</th>
+
+
 
 
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($categories as $category)
-                                        <tr>
-                                            <td>{{ $category->id }}</td>
-                                            <td>{{ $category->category_name }}</td>
-                                            <td>{{ $category->description }}</td>
-                                            <td><img src="{{ $category->image }}" height="40" width="40" /></td>
-                                            <td>{{ $category->image_type }}</td>
-                                            <td>
-                                            <a href="{{ route('admin.categories.edit', $category->id) }}"
-                                                class="btn btn-primary btn-sm">Edit</a>
-                                            <a href="{{ route('admin.categories.delete', $category->id) }}"
-                                                class="btn btn-danger btn-sm" onclick="return confirm('Are you sure, want to delete this category?')">Delete</a>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="5" class="text-center">No Categories Found</td>
-                                        </tr>
-                                    @endforelse
+
                                 </tbody>
                             </table>
                         </div>
@@ -92,14 +75,26 @@
     <script src="{{ asset('assets/admin/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
     <script>
         $(function() {
-            $("#categories").DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
+            $('#categories').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{!! route('admin.categories.get-categories') !!}",
+                columns: [{
+                        data: 'category_name',
+                        name: 'category_name'
+                    },
+                    {
+                        data: 'image',
+                        name: 'image'
+                    },
+
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    }
+                ]
             });
         });
     </script>
