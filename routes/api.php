@@ -79,7 +79,7 @@ Route::middleware('api.verify')->group(function(){
         Route::get('/', [CartController::class, 'index']);
         Route::get('/cartInfo',[CartController::class,'cartInfo']);
         Route::delete('{itemId}/deleteItem',[CartController::class,'deleteItem']);
-        Route::post('{product_id}/addItem',[CartController::class,'addItem']);
+        Route::post('add-to-cart',[CartController::class,'addItem']);
 
     });
 });

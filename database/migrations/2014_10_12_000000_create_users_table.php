@@ -21,6 +21,9 @@ return new class extends Migration
             $table->string('password');
             $table->string('country_code');
             $table->string('phone_number')->unique();
+            $table->string('otp')->nullable();
+            $table->timestamp('otp_expires_at')->nullable();
+            $table->enum('role', ['user', 'admin'])->default('user');
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

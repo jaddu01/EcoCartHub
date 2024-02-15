@@ -5,25 +5,24 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\ResponseBuilder;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use App\Models\User;
-use App\Models\CartItem;
 use App\Http\Resources\CartResource;
 use App\Models\Product;
 use App\Models\Cart;
 use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 
 class CartController extends Controller
 {
     public function index()
     {
-
         $carts = Cart::with('cart_item.products')->get();
-
-        return ResponseBuilder::success($carts);
+        $this->response->carts = CartResource::collection($carts);
+        return ResponseBuilder::success($this->response);
     }
 
 
@@ -50,44 +49,58 @@ class CartController extends Controller
 
     }
 
-    public function addItem(Request $request, $productId){
+    public function addItem(Request $request){
         try{
-            $user= $request->user('api');
-            $cart = $user->cart;
-            // dd($cart);
-            if(!$cart){
-                $cart = Cart::create(['user_id'=>$user->id,'status'=>'active']);
+            $validator = Validator::make($request->all(), [
+                'product_id' => ['required', Rule::exists('products', 'id')->whereNull('deleted_at')],
+                'color' => 'nullable|string|max:255'
+            ]);
+
+            if($validator->fails()){
+                return ResponseBuilder::error($validator->errors()->first(), $this->validationStatus);
             }
 
-
-
+            DB::beginTransaction();
+            $user = $request->user('api');
+            $productId = $request->product_id;
             $product= Product::find($productId);
-
             if(!$product){
-                return ResponseBuilder::error('Product not found', $this->errorStatus);
+                return ResponseBuilder::error('Product not found', $this->notFoundStatus);
             }
             $price= $product->product_price;
+            $quantity= $request->quantity ?? 1;
 
+            $totalPrice = $price * $quantity;
+
+            $cart = $user->cart;
+            if(!$cart){
+                $cart = Cart::create(['user_id'=>$user->id, 'total_price' => $totalPrice, 'grand_total' => $totalPrice]);
+            }else{
+                $cart->update(['total_price' => $cart->total_price + $totalPrice, 'grand_total' => $cart->grand_total + $totalPrice]);
+            }
             $existingItem = $cart->items()->where('product_id', $productId)->first();
 
             if($existingItem){
                 $existingItem->increment('quantity');
-                $existingItem->update(['price'=> $price * $existingItem->quantity]);
+                $existingItem->update(['product_price'=> $price, 'price' => $existingItem->quantity * $price, 'color' => $request->color ?? $existingItem->color]);
             }else{
                 $items = [
                     'product_id' => $productId,
-                    'quantity' => 1,
-                    'price' => $price
+                    'quantity' => $quantity,
+                    'product_price' => $price,
+                    'price' => $totalPrice,
+                    'color' => $request->color ?? null,
                 ];
 
                 $cart->items()->create($items);
             }
+            DB::commit();
             $this->response->cart = new CartResource($cart);
             return ResponseBuilder::success($this->response, 'Item added to the cart successfully',$this->successStatus);
 
         }catch(Exception $e){
-
-            log::error($e->getMessage());
+            DB::rollBack();
+            dd($e->getMessage());
             return ResponseBuilder::error('Something went wrong', $this->errorStatus);
         }
     }
