@@ -7,6 +7,7 @@ use App\Http\Requests\CategoryRequest;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 
 class CategoryController extends Controller
@@ -107,7 +108,8 @@ public function delete($id){
                 return $category->category_name;
             })
             ->addColumn('image', function($category){
-                return '<img src="{{ Storage::url($category->image) }}" height="100" width="100" />';
+                return '<img src="'.Storage::url($category->image).'" height="70" width="70" />';
+
             })
             ->addColumn('action', function($category){
                 return '<a href="'.route('admin.categories.edit',$category->id).'" class="btn btn-primary btn-sm">Edit</a>

@@ -20,6 +20,9 @@ Route::middleware('admin.auth')->group(function(){
         Route::get('/edit/{id}', [ProductController::class, 'edit'])->name('admin.products.edit');
         Route::post('/update/{id}', [ProductController::class, 'update'])->name('admin.products.update');
         Route::get('/delete/{id}', [ProductController::class, 'delete'])->name('admin.products.delete');
+        //from datatable
+        Route::get('/get-products', [ProductController::class, 'getProducts'])->name('admin.products.get-products');
+
     });
 
     Route::prefix('category')->group(function(){
@@ -29,7 +32,8 @@ Route::middleware('admin.auth')->group(function(){
         Route::get('/edit/{id}', [CategoryController::class, 'edit'])->name('admin.categories.edit');
         Route::post('/update/{id}', [CategoryController::class, 'update'])->name('admin.categories.update');
         Route::get('/delete/{id}', [CategoryController::class, 'delete'])->name('admin.categories.delete');
-        Route::get('/get-categories', [UsersController::class, 'getCategories'])->name('admin.categories.get-categories');
+        //from datatable
+        Route::get('/get-categories', [CategoryController::class, 'getCategories'])->name('admin.categories.get-categories');
     });
 
 
@@ -42,7 +46,7 @@ Route::middleware('admin.auth')->group(function(){
         Route::get('/edit/{id}', [UsersController::class, 'edit'])->name('admin.users.edit');
         Route::post('/update/{id}', [UsersController::class, 'update'])->name('admin.users.update');
         Route::get('/delete/{id}', [UsersController::class, 'delete'])->name('admin.users.delete');
-        Route::get('/profile', [UsersController::class, 'profile'])->name('admin.users.profile');
+        Route::get('/profile/{id}', [UsersController::class, 'profile'])->name('admin.users.profiles');
 
         //from datatable
         Route::get('/get-users', [UsersController::class, 'getUsers'])->name('admin.users.get-users');

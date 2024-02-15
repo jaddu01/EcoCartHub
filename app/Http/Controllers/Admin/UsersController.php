@@ -106,7 +106,8 @@ class UsersController extends Controller
 
     public function profile($id){
         $user = User::with('addresses')->find($id);
-        return view('admin.users.profile', compact('users'));
+        // $address= $user->addresses()->first();
+        return view('admin.users.profiles', compact('user','address'));
     }
 
     public function getUsers(Request $request){
@@ -131,7 +132,7 @@ class UsersController extends Controller
             ->addColumn('action', function($user){
                 return '<a href="'.route('admin.users.edit',$user->id).'" class="btn btn-primary btn-sm">Edit</a>
                 <a href="'.route('admin.users.delete',$user->id).'" class="btn btn-danger btn-sm">Delete</a>
-                <a href="'.route('admin.users.profile',$user->id).'" class="btn btn-info btn-sm">Profile</a>';
+                <a href="'.route('admin.users.profiles',$user->id).'" class="btn btn-info btn-sm">Profile</a>';
             })
             ->rawColumns(['action','first_name'])
             ->make(true);

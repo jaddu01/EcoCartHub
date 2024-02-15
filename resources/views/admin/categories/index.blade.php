@@ -32,7 +32,7 @@
                     <div class="card">
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <table id="products" class="table table-bordered table-hover">
+                            <table id="categories" class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
 

@@ -41,31 +41,13 @@
                                         <th>Quantity</th>
                                         <th>Price</th>
                                         <th>Color</th>
+                                        <th>productImage</th>
                                         <th>Action</th>
 
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($products as $product)
-                                        <tr>
-                                            <td>{{ $product->product_name }}</td>
-                                            <td>{{ $product->brand }}</td>
-                                            <td>{{ $product->description }}</td>
-                                            <td>{{ $product->quantity }}</td>
-                                            <td>{{ $product->product_price }}</td>
-                                            <td>{{ $product->color }}</td>
-                                            <td>
-                                                <a href="{{ route('admin.products.edit', $product->id) }}"
-                                                    class="btn btn-primary btn-sm">Edit</a>
-                                                <a href="{{ route('admin.products.delete', $product->id) }}"
-                                                    class="btn btn-danger btn-sm" onclick="return confirm('Are you sure, want to delete this product?')">Delete</a>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="6" class="text-center">No Products Found</td>
-                                        </tr>
-                                    @endforelse
+
                                 </tbody>
                             </table>
                         </div>
@@ -94,14 +76,46 @@
     <script src="{{ asset('assets/admin/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
     <script>
         $(function() {
-            $("#products").DataTable({
-                "paging": true,
-                "lengthChange": true,
-                "searching": true,
-                "ordering": false,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
+            $('#products').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{!! route('admin.products.get-products') !!}",
+                columns: [{
+                        data: 'product_name',
+                        name: 'product_name'
+                    },
+                    {
+                        data: 'brand',
+                        name: 'brand'
+                    },
+                    {
+                        data: 'description',
+                        name: 'description'
+                    },
+                    {
+                        data: 'quantity',
+                        name: 'quantity'
+                    },
+                    {
+                        data: 'product_price',
+                        name: 'product_price'
+                    },
+                    {
+                        data: 'color',
+                        name: 'color'
+                    },
+                    {
+                        data: 'productImage',
+                        name: 'productImage'
+                    },
+
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    }
+                ]
             });
         });
     </script>

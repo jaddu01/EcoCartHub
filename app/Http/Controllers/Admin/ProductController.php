@@ -7,7 +7,10 @@ use App\Http\Requests\ProductRequest;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Yajra\DataTables\Facades\DataTables;
+
 
 class ProductController extends Controller
 {
@@ -90,5 +93,40 @@ class ProductController extends Controller
             DB::rollBack();
             return redirect()->back()->with('error',$e->getMessage());
         }
+    }
+
+
+    public function getProducts(Request $request){
+        $products = Product::latest()->get();
+
+        return DataTables::of($products)
+            ->addColumn('product_name', function($product){
+                return $product->product_name;
+            })
+            ->addColumn('brand', function($product){
+                return $product->brand;
+
+            })
+
+            ->addColumn('description', function($product){
+                return $product->description;
+            })
+            ->addColumn('product_price', function($product){
+                return $product->product_price;
+            })
+            ->addColumn('color', function($product){
+                return $product->color;
+            })
+            ->addColumn('productImage', function($product){
+                return '<img src="'.Storage::url($product->images()->first()->image).'" height="70" width="70" />';;
+            })
+            ->addColumn('action', function($product){
+                return '<a href="'.route('admin.products.edit',$product->id).'" class="btn btn-primary btn-sm">Edit</a>
+                <a href="'.route('admin.products.delete',$product->id).'" class="btn btn-danger btn-sm">Delete</a>
+                ';
+            })
+            ->rawColumns(['action','productImage'])
+            ->make(true);
+
     }
 }
