@@ -105,9 +105,8 @@ class UsersController extends Controller
 
 
     public function profile($id){
-        $user = User::with('addresses')->find($id);
-        // $address= $user->addresses()->first();
-        return view('admin.users.profiles', compact('user','address'));
+        $user = User::with('address')->find($id);
+        return view('admin.users.profiles', compact('user'));
     }
 
     public function getUsers(Request $request){

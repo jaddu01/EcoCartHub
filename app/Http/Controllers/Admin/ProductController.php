@@ -15,8 +15,7 @@ use Yajra\DataTables\Facades\DataTables;
 class ProductController extends Controller
 {
     public function index(Request $request){
-        $products= Product::latest()->get();
-        return view('admin.products.index',compact('products'));
+        return view('admin.products.index');
     }
 
     //create
@@ -118,7 +117,7 @@ class ProductController extends Controller
                 return $product->color;
             })
             ->addColumn('productImage', function($product){
-                return '<img src="'.Storage::url($product->images()->first()->image).'" height="70" width="70" />';;
+                return '<img src="'.Storage::url($product->image).'" height="70" width="70" />';;
             })
             ->addColumn('action', function($product){
                 return '<a href="'.route('admin.products.edit',$product->id).'" class="btn btn-primary btn-sm">Edit</a>
