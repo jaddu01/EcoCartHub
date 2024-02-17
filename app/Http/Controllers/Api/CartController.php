@@ -32,10 +32,9 @@ class CartController extends Controller
     try {
         $user= $request->user('api');
 
-        $cart = $user->cart()->with(['user','items'])->first();
-
-        if (!$cart) {
-            return ResponseBuilder::error( 'Cart not found', $this->errorStatus);
+        $cart = $user->cart;
+        if(!$cart){
+            return ResponseBuilder::error('Cart not found', $this->notFoundStatus);
         }
 
         $this->response->cart = new CartResource($cart);
@@ -43,7 +42,8 @@ class CartController extends Controller
         return ResponseBuilder::success($this->response, 'Cart details is successfully returned', $this->successStatus);
 
     } catch (Exception $e) {
-        Log::error($e->getMessage());
+        // Log::error($e->getMessage());
+        dd($e->getMessage());
         return ResponseBuilder::error( 'Something went wrong', $this->errorStatus);
     }
 
@@ -97,7 +97,7 @@ class CartController extends Controller
                 $cart->items()->create($items);
             }
             DB::commit();
-            $this->response->cart = new CartItemResource($cart);
+            $this->response->cart = new CartResource($cart);
             return ResponseBuilder::success($this->response, 'Item added to the cart successfully',$this->successStatus);
 
         }catch(Exception $e){
@@ -136,6 +136,7 @@ class CartController extends Controller
     //     }
     // }
 
+    //remove only item from cart item table and update cart table total price and grand total
     public function deleteItem(Request $request){
         try{
             $validator = Validator::make($request->all(), [
@@ -183,6 +184,29 @@ class CartController extends Controller
             return ResponseBuilder::error('Something went wrong', $this->errorStatus);
         }
     }
+
+    //create a new function to update the cart
+
+    //clear the cart
+    public function clearCart(Request $request){
+        try{
+            $user = $request->user('api');
+
+            $cart = $user->cart;
+            if(!$cart){
+                return ResponseBuilder::error('Cart not found', $this->notFoundStatus);
+            }
+
+            $cart->items()->delete();
+            $cart->delete();
+
+            return ResponseBuilder::success(null, 'Cart cleared successfully', $this->successStatus);
+
+        }catch(Exception $e){
+            return ResponseBuilder::error('Something went wrong', $this->errorStatus);
+        }
+    }
+
 
 
 }
