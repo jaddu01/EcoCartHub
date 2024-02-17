@@ -16,11 +16,13 @@ class CartResource extends JsonResource
     {
         return[
             'id' => $this->id,
+            'total_price'=>$this->total_price,
+            'grand_total'=>$this->grand_total,
             // 'user' => new UserShortResource($this->whenLoaded('user')),
-            'user' =>new UserResource($this->user),
+            'user' =>new UserShortResource($this->user),
             // 'products' => CartItemResource::collection($this->whenLoaded('items')),
             'products' => CartItemResource::collection($this->items),
-            'status'=>$this->status
+
         ];
     }
 }

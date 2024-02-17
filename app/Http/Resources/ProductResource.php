@@ -22,7 +22,7 @@ class ProductResource extends JsonResource
             'color' => (string) $this->color,
             'description' =>(string) $this->description,
             'product_price' => (float) $this->product_price,
-            'images' => ProductImagesResource::collection($this->images)
+            'images' => ProductImagesResource::collection($this->whenLoaded('images')),
         ];
     }
 }

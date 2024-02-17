@@ -7,6 +7,7 @@ use App\Helpers\ResponseBuilder;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\CartResource;
+use App\Http\Resources\CartItemResource;
 use App\Models\Product;
 use App\Models\Cart;
 use Exception;
@@ -83,6 +84,7 @@ class CartController extends Controller
             if($existingItem){
                 $existingItem->increment('quantity');
                 $existingItem->update(['product_price'=> $price, 'price' => $existingItem->quantity * $price, 'color' => $request->color ?? $existingItem->color]);
+
             }else{
                 $items = [
                     'product_id' => $productId,
@@ -95,7 +97,7 @@ class CartController extends Controller
                 $cart->items()->create($items);
             }
             DB::commit();
-            $this->response->cart = new CartResource($cart);
+            $this->response->cart = new CartItemResource($cart);
             return ResponseBuilder::success($this->response, 'Item added to the cart successfully',$this->successStatus);
 
         }catch(Exception $e){
@@ -106,30 +108,78 @@ class CartController extends Controller
     }
 
 
-    public function deleteItem(Request $request, $itemId) {
-        try {
-            $user = $request->user('api');
-            $cart = $user->cart;
-            //dd($user);
-            $item = $cart->items()->find($itemId);
+    // public function deleteItem(Request $request,$itemId) {
+    //     try {
+    //         $user = $request->user('api');
+    //         $cart = $user->cart();
+    //         //dd($user);
+    //         $item = $cart->items()->find($itemId);
 
-            if ($item->quantity > 1) {
-                $item->decrement('quantity');
+    //         if ($item->quantity > 1) {
+    //             $item->decrement('quantity');
 
-                $product = $item->product;
+    //             $product = $item->product;
 
-            $newPrice = $product->price * $item->quantity;
-            $item->update(['price' => $newPrice]);
+    //         $newPrice = $product->price * $item->quantity;
+    //         $item->update(['price' => $newPrice]);
 
-            } else {
+    //         } else {
 
-                $item->delete();
-                return ResponseBuilder::success(null, 'Item removed from the cart successfully', $this->successStatus);
+    //             $item->delete();
+    //             return ResponseBuilder::success(null, 'Item removed from the cart successfully', $this->successStatus);
+    //         }
+
+    //         return ResponseBuilder::success(null, 'Item quantity reduced successfully', $this->successStatus);
+    //     } catch (Exception $e) {
+    //         Log::error($e->getMessage());
+    //         return ResponseBuilder::error('Something went wrong', $this->errorStatus);
+    //     }
+    // }
+
+    public function deleteItem(Request $request){
+        try{
+            $validator = Validator::make($request->all(), [
+                'product_id' => ['required', Rule::exists('products', 'id')->whereNull('deleted_at')],
+            ]);
+
+            if($validator->fails()){
+                return ResponseBuilder::error($validator->errors()->first(), $this->validationStatus);
             }
 
-            return ResponseBuilder::success(null, 'Item quantity reduced successfully', $this->successStatus);
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
+            DB::beginTransaction();
+            $user = $request->user('api');
+            $productId = $request->product_id;
+
+            $cart = $user->cart;
+            if(!$cart){
+                return ResponseBuilder::error('Cart not found', $this->notFoundStatus);
+            }
+
+            $existingItem = $cart->items()->where('product_id', $productId)->first();
+
+            if($existingItem){
+
+                $existingItem->decrement('quantity');
+
+                $price = $existingItem->product_price;
+                $existingItem->price = $price * $existingItem->quantity;
+                $existingItem->save();
+
+                $cart->update(['total_price' => $cart->total_price - $price, 'grand_total' => $cart->grand_total - $price]);
+
+
+                if ($existingItem->quantity === 0) {
+                    $existingItem->delete();
+                }
+            } else {
+                return ResponseBuilder::error('Item not found in the cart', $this->notFoundStatus);
+            }
+
+            DB::commit();
+            $this->response->cart = new CartResource($cart);
+            return ResponseBuilder::success($this->response, 'Item removed from the cart successfully', $this->successStatus);
+        } catch(Exception $e){
+            DB::rollBack();
             return ResponseBuilder::error('Something went wrong', $this->errorStatus);
         }
     }
