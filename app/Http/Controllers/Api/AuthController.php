@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\ResponseBuilder;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use App\Mail\SendOrderConfirmation;
+use App\Mail\SendRegisterConfirmation;
 use App\Models\User;
 use App\Models\UserAddress;
 use Illuminate\Http\Request;
@@ -15,8 +17,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
-
-
+use Exception;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -54,14 +57,19 @@ class AuthController extends Controller
             $this->response->user = new UserResource($user);
             DB::commit();
 
+            try{
+                //send order confirmation email
+                Mail::to($user->email)->send(new SendRegisterConfirmation($user));
+            }catch(Exception $e){
+                Log::error($e->getMessage());
+            }
+
 
             return ResponseBuilder::success($this->response, "User created successfully.", $this->successStatus);
 
         }catch(\Exception $e){
             DB::rollBack();
-            return $e;
-
-            //return ResponseBuilder::error("Oops! Something went wrong.", $this->errorStatus);
+            return ResponseBuilder::error("Oops! Something went wrong.", $this->errorStatus);
         }
     }
 
