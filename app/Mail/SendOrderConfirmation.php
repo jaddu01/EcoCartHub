@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Order;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -12,13 +13,13 @@ use Illuminate\Queue\SerializesModels;
 class SendOrderConfirmation extends Mailable
 {
     use Queueable, SerializesModels;
-
+    public $order;
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct(Order $order)
     {
-        //
+        $this->order = $order;
     }
 
     /**
@@ -28,6 +29,7 @@ class SendOrderConfirmation extends Mailable
     {
         return new Envelope(
             subject: 'Send Order Confirmation',
+            from: 'info@ecocarthub.com'
         );
     }
 
@@ -37,7 +39,8 @@ class SendOrderConfirmation extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'mail.order_confirmation',
+            with: ['order' => $this->order]
         );
     }
 

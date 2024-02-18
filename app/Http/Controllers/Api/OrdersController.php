@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\ResponseBuilder;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
+use App\Mail\SendOrderConfirmation;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use App\Models\Order;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class OrdersController extends Controller
 {
@@ -67,6 +70,13 @@ class OrdersController extends Controller
             $cart->delete();
 
             DB::commit();
+
+            try{
+                //send order confirmation email
+                Mail::to($user->email)->send(new SendOrderConfirmation($order));
+            }catch(Exception $e){
+                Log::error($e->getMessage());
+            }
 
             return ResponseBuilder::success('Order placed successfully', $this->successStatus);
 
