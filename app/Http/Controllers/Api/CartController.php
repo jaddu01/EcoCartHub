@@ -160,18 +160,18 @@ class CartController extends Controller
 
             if($existingItem){
 
-                $existingItem->decrement('quantity');
+                $price = $existingItem->product_price;
+
+                // $existingItem->update(['quantity' => 0]);
+
 
                 $price = $existingItem->product_price;
-                $existingItem->price = $price * $existingItem->quantity;
-                $existingItem->save();
+                $cart->update([
+                    'total_price' => $cart->total_price - ($price * $existingItem->quantity),
+                    'grand_total' => $cart->grand_total - ($price * $existingItem->quantity)
+                ]);
+                $existingItem->delete();
 
-                $cart->update(['total_price' => $cart->total_price - $price, 'grand_total' => $cart->grand_total - $price]);
-
-
-                if ($existingItem->quantity === 0) {
-                    $existingItem->delete();
-                }
             } else {
                 return ResponseBuilder::error('Item not found in the cart', $this->notFoundStatus);
             }
@@ -203,6 +203,52 @@ class CartController extends Controller
             return ResponseBuilder::success(null, 'Cart cleared successfully', $this->successStatus);
 
         }catch(Exception $e){
+            return ResponseBuilder::error('Something went wrong', $this->errorStatus);
+        }
+    }
+
+
+    public function removeItem(Request $request){
+        try{
+            $validator = Validator::make($request->all(), [
+                'product_id' => ['required', Rule::exists('products', 'id')->whereNull('deleted_at')],
+            ]);
+
+            if($validator->fails()){
+                return ResponseBuilder::error($validator->errors()->first(), $this->validationStatus);
+            }
+
+            DB::beginTransaction();
+            $user = $request->user('api');
+            $productId = $request->product_id;
+
+            $cart = $user->cart;
+            if(!$cart){
+                return ResponseBuilder::error('Cart not found', $this->notFoundStatus);
+            }
+
+            $existingItem = $cart->items()->where('product_id', $productId)->first();
+
+            if($existingItem){
+                $existingItem->delete();
+
+                $existingItem->decrement('quantity');
+
+                $price = $existingItem->product_price;
+                $existingItem->price = $price * $existingItem->quantity;
+                $existingItem->save();
+
+                $cart->update(['total_price' => $cart->total_price - $price, 'grand_total' => $cart->grand_total - $price]);
+
+            } else {
+                return ResponseBuilder::error('Item not found in the cart', $this->notFoundStatus);
+            }
+
+            DB::commit();
+            $this->response->cart = new CartResource($cart);
+            return ResponseBuilder::success($this->response, 'Item removed from the cart successfully', $this->successStatus);
+        } catch(Exception $e){
+            DB::rollBack();
             return ResponseBuilder::error('Something went wrong', $this->errorStatus);
         }
     }

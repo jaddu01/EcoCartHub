@@ -82,6 +82,8 @@ Route::middleware('api.verify')->group(function(){
         Route::delete('/deleteItem',[CartController::class,'deleteItem']);
         Route::post('add-to-cart',[CartController::class,'addItem']);
         Route::delete('clear', [CartControlleR::class, 'clearCart']);
+        Route::delete('/removeItem',[CartController::class,'removeItem']);
+
 
     });
 
@@ -90,5 +92,10 @@ Route::middleware('api.verify')->group(function(){
         Route::get('/',[OrdersController::class,'index']);
         Route::post('/place-order',[OrdersController::class,'placeOrder']);
         Route::get('/{order_id}/info',[OrdersController::class,'view']);
+        Route::post('/{order_id}/updateStatus',[OrdersController::class,'updateStatus']);
+        Route::post('/{order_id}/cancelOrder',[OrdersController::class,'cancelOrder']);
+
+
+
     });
 });
