@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Admin\{AuthController,DashboardController, UsersController,ProductController,CategoryController};
+use App\Http\Controllers\Admin\{AuthController,DashboardController,OrderController, UsersController,ProductController,CategoryController};
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [AuthController::class, 'index'])->name('admin.index');
@@ -51,6 +51,18 @@ Route::middleware('admin.auth')->group(function(){
         //from datatable
         Route::get('/get-users', [UsersController::class, 'getUsers'])->name('admin.users.get-users');
     });
+
+
+
+    Route::prefix('order')->group(function(){
+        Route::get('/', [OrderController::class, 'index'])->name('admin.orders');
+
+        //from datatable
+        Route::get('/get-orders', [OrderController::class, 'getOrders'])->name('admin.orders.get-orders');
+    });
+
+
+
 
     Route::get('logout', [AuthController::class, 'logout'])->name('admin.logout');
 });

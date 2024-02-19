@@ -25,10 +25,11 @@ class Test extends Command
     /**
      * Execute the console command.
      */
-    // public function handle()
-    // {
-    //     $this->info('Sending Test Email........');
-    //     Mail::to('abody@ecocarthub.com')->send(new SendOrderConfirmation());
-    //     $this->info('Test Email Sent Successfully');
-    // }
+    public function handle()
+    {
+        $this->info('Sending Test Email........');
+        // Mail::to('abody@ecocarthub.com')->send(new SendOrderConfirmation());
+        $this->info('Test Email Sent Successfully');
+        $this->send('confirm');
+    }
 }

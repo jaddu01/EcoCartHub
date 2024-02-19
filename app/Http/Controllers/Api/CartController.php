@@ -54,7 +54,8 @@ class CartController extends Controller
         try{
             $validator = Validator::make($request->all(), [
                 'product_id' => ['required', Rule::exists('products', 'id')->whereNull('deleted_at')],
-                'color' => 'nullable|string|max:255'
+                'color' => 'nullable|string|max:255',
+                'quantity'=> 'integer|min:1'
             ]);
 
             if($validator->fails()){
