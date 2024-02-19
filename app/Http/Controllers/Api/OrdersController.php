@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\OrderConfirmed;
 use App\Helpers\ResponseBuilder;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
@@ -71,12 +72,7 @@ class OrdersController extends Controller
 
             DB::commit();
 
-            try{
-                //send order confirmation email
-                Mail::to($user->email)->send(new SendOrderConfirmation($order));
-            }catch(Exception $e){
-                Log::error($e->getMessage());
-            }
+            event(new OrderConfirmed($order));
 
             return ResponseBuilder::success('Order placed successfully', $this->successStatus);
 
