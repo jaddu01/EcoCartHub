@@ -56,6 +56,7 @@ Route::middleware('admin.auth')->group(function(){
 
     Route::prefix('order')->group(function(){
         Route::get('/', [OrderController::class, 'index'])->name('admin.orders');
+        Route::get('/{order_id}/show', [OrderController::class, 'show'])->name('admin.orders.show');
 
         //from datatable
         Route::get('/get-orders', [OrderController::class, 'getOrders'])->name('admin.orders.get-orders');

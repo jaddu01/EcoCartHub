@@ -38,7 +38,8 @@
                                         <th>Discount</th>
                                         <th>Grand Total</th>
                                         <th>Status</th>
-                                        <th>User ID</th>
+                                        <th>User Name</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -99,9 +100,15 @@
                         name: 'status'
                     },
                     {
-                        data: 'user_id',
-                        name: 'user_id'
+                        data: 'user_name',
+                        name: 'user_name'
                     },
+                    {
+                        data: 'actions',
+                        name: 'actions',
+                        orderable: false,
+                        searchable: false
+                    }
 
                 ]
             });
