@@ -44,8 +44,6 @@ class SendRegisterConfirmation extends Mailable
         return new Content(
             view: 'mail.user_register',
             with: ['user' => $this->user]
-
-
         );
     }
 

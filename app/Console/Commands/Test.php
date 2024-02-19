@@ -3,7 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Mail\SendOrderConfirmation;
+use App\Mail\SendRegisterConfirmation;
+use App\Models\User;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class Test extends Command
@@ -27,9 +30,14 @@ class Test extends Command
      */
     public function handle()
     {
+        $user = User::find(3);
         $this->info('Sending Test Email........');
         // Mail::to('abody@ecocarthub.com')->send(new SendOrderConfirmation());
+        try{
+            Mail::to('abody@ecocarthub.com')->send(new SendRegisterConfirmation($user));
+        }catch(\Exception $e){
+            $this->error('Error: '.$e->getMessage());
+        }
         $this->info('Test Email Sent Successfully');
-        $this->send('confirm');
     }
 }
