@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\RegisterConfirmed;
 use App\Helpers\ResponseBuilder;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
@@ -60,13 +61,7 @@ class AuthController extends Controller
             $this->response->user = new UserResource($user);
             DB::commit();
 
-            try{
-                //send order confirmation email
-                Mail::to($user->email)->send(new SendRegisterConfirmation($user));
-            }catch(Exception $e){
-                Log::error($e->getMessage());
-            }
-
+            event(new RegisterConfirmed($user));
 
             return ResponseBuilder::success($this->response, "User created successfully.", $this->successStatus);
 
