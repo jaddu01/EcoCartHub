@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="{{ asset('assets/admin/dist/css/adminlte.min.css') }}">
 </head>
 
-<body class="hold-transition login-page">
+<body class="hold-transition login-page" dir="ltr">
     <div class="login-box">
         <div class="login-logo">
             <a href="{{ route('admin.login') }}"><b>EcoCartHub</b></a>
@@ -23,7 +23,7 @@
         <!-- /.login-logo -->
         <div class="card">
             <div class="card-body login-card-body">
-                <p class="login-box-msg">Sign in to start your session</p>
+                <p class="login-box-msg">{{ __('login.sign_in_text') }}</p>
                 @if(\Session::get('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         {{ \Session::get('success') }}
@@ -68,20 +68,20 @@
                             <div class="icheck-primary">
                                 <input type="checkbox" id="remember">
                                 <label for="remember">
-                                    Remember Me
+                                    {{ __('login.remember_me') }}
                                 </label>
                             </div>
                         </div>
                         <!-- /.col -->
                         <div class="col-4">
-                            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                            <button type="submit" class="btn btn-primary btn-block">{{ __('login.sign_in') }}</button>
                         </div>
                         <!-- /.col -->
                     </div>
                 </form>
                 <!-- /.social-auth-links -->
                 <p class="mb-1">
-                    <a href="forgot-password.html">I forgot my password</a>
+                    <a href="forgot-password.html">{{ __('login.forgot_password') }}</a>
                 </p>
             </div>
             <!-- /.login-card-body -->

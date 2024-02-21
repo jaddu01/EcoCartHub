@@ -8,7 +8,8 @@ class AuthController extends Controller
 {
     //index
     public function index(){
-        return "Welcome to Website";
+        app()->setLocale('en');
+        return __('api.welcome_text');
     }
 
 }

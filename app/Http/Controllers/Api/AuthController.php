@@ -26,6 +26,9 @@ class AuthController extends Controller
     //register
     public function register(Request $request){
         try{
+            $lang = $request->header('lang');
+            app()->setLocale($lang);
+
             $validator = Validator::make($request->all(), [
                 'first_name' => 'required|string|max:50',
                 'last_name' => 'required|string|max:50',

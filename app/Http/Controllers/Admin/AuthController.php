@@ -12,6 +12,7 @@ class AuthController extends Controller
 {
     //login
     public function index(){
+        app()->setLocale('ar');
         $title = "Login | EcocartHub";
         if(auth()->guard('admin')->check()){
             return redirect()->route('admin.dashboard');
