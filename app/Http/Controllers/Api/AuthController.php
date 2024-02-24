@@ -6,6 +6,7 @@ use App\Events\RegisterConfirmed;
 use App\Helpers\ResponseBuilder;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use App\Jobs\SenEmails;
 use App\Mail\SendOrderConfirmation;
 use App\Mail\SendRegisterConfirmation;
 use App\Models\User;
@@ -25,8 +26,9 @@ use Illuminate\Support\Facades\Mail;
 class AuthController extends Controller
 {
     //register
-    public function register(Request $request){
-        try{
+    public function register(Request $request)
+    {
+        try {
             $lang = $request->header('lang');
             app()->setLocale($lang);
 
@@ -40,20 +42,20 @@ class AuthController extends Controller
                 'phone_number' => ['required', 'string', 'max:15', Rule::unique('users', 'phone_number')->whereNull('deleted_at')],
             ]);
 
-            if($validator->fails()){
+            if ($validator->fails()) {
                 return ResponseBuilder::error($validator->errors()->first(), $this->validationStatus);
             }
             DB::beginTransaction();
 
-            $input = $request->only(['first_name','last_name','username','email','country_code','phone_number']);
+            $input = $request->only(['first_name', 'last_name', 'username', 'email', 'country_code', 'phone_number']);
             $input['password'] = Hash::make($request->password);
 
             $user = User::create($input);
 
             $addresses = $request->get('addresses', []);
             foreach ($addresses as $address) {
-            $user->addresses()->create($address);
-        }
+                $user->addresses()->create($address);
+            }
 
             //log-in user
             $token = $user->createToken('EcoCartHub')->accessToken;
@@ -64,16 +66,16 @@ class AuthController extends Controller
             event(new RegisterConfirmed($user));
 
             return ResponseBuilder::success($this->response, "User created successfully.", $this->successStatus);
-
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             DB::rollBack();
             return ResponseBuilder::error("Oops! Something went wrong.", $this->errorStatus);
         }
     }
 
     //login
-    public function login(Request $request){
-        try{
+    public function login(Request $request)
+    {
+        try {
             $validator = Validator::make($request->all(), [
                 'email' => 'required|string|max:50',
                 'password' => 'required|string|min:8|max:50',
@@ -81,19 +83,19 @@ class AuthController extends Controller
 
             ]);
 
-            if($validator->fails()){
+            if ($validator->fails()) {
                 return ResponseBuilder::error($validator->errors()->first(), $this->validationStatus);
             }
 
 
             //$credentials = request(['email', 'password']);
-            if(filter_var($request->email, FILTER_VALIDATE_EMAIL)){
+            if (filter_var($request->email, FILTER_VALIDATE_EMAIL)) {
                 $credentials = ['email' => $request->email, 'password' => $request->password];
-            }else{
+            } else {
                 $credentials = ['username' => $request->email, 'password' => $request->password];
             }
 
-            if(!Auth::attempt($credentials)){
+            if (!Auth::attempt($credentials)) {
                 return ResponseBuilder::error("Invalid credentials.", $this->unAuthStatus);
             }
 
@@ -105,18 +107,18 @@ class AuthController extends Controller
             return ResponseBuilder::successWithToken($token, $this->response, "User logged in successfully.", $this->successStatus);
 
             //return ResponseBuilder::success($this->response, "User logged in successfully.", $this->successStatus);
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return ResponseBuilder::error("Oops! Something went wrong.", $this->errorStatus);
         }
-
     }
 
     //logout
-    public function logout(Request $request){
-        try{
+    public function logout(Request $request)
+    {
+        try {
             $request->user()->token()->revoke();
             return ResponseBuilder::success(null, "User logged out successfully.", $this->successStatus);
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return ResponseBuilder::error("Oops! Something went wrong.", $this->errorStatus);
         }
     }
@@ -149,8 +151,8 @@ class AuthController extends Controller
         ]);
 
         $user = User::where('country_code', $request->country_code)
-                    ->where('phone_number', $request->phone_number)
-                    ->first();
+            ->where('phone_number', $request->phone_number)
+            ->first();
 
         if (!$user) {
             // User not found
@@ -167,41 +169,54 @@ class AuthController extends Controller
 
         // Send OTP (you may implement this part)
 
-        return ResponseBuilder::success($otp,'OTP sent successfully', $this->successStatus);
+        return ResponseBuilder::success($otp, 'OTP sent successfully', $this->successStatus);
     }
 
     public function verifyOTP(Request $request)
-{
+    {
 
-    $request->validate([
-        'country_code' => 'required|string',
-        'phone_number' => 'required|string',
-        'otp' => 'required|string',
-    ]);
+        $request->validate([
+            'country_code' => 'required|string',
+            'phone_number' => 'required|string',
+            'otp' => 'required|string',
+        ]);
 
-    // Find the user by phone number and country code
-    $user = User::where('country_code', $request->country_code)
-        ->where('phone_number', $request->phone_number)
-        ->first();
+        // Find the user by phone number and country code
+        $user = User::where('country_code', $request->country_code)
+            ->where('phone_number', $request->phone_number)
+            ->first();
 
-    if (!$user) {
-        // User not found
-        return ResponseBuilder::error('User not found', $this->errorStatus);
+        if (!$user) {
+            // User not found
+            return ResponseBuilder::error('User not found', $this->errorStatus);
+        }
+
+
+        if ($request->otp === $user->otp) {
+            // Clear OTP fields in the user record
+            $user->otp = null;
+            $user->save();
+
+
+            $token = $user->createToken('OTPtoken')->accessToken;
+
+            return ResponseBuilder::success($token, 'OTP verified successfully', $this->successStatus);
+        } else {
+            return ResponseBuilder::error('Invalid OTP', $this->errorStatus);
+        }
     }
 
-
-    if ($request->otp===$user->otp) {
-        // Clear OTP fields in the user record
-        $user->otp = null;
-        $user->save();
-
-
-        $token = $user->createToken('OTPtoken')->accessToken;
-
-        return ResponseBuilder::success($token,'OTP verified successfully', $this->successStatus);
-    } else {
-        return ResponseBuilder::error('Invalid OTP', $this->errorStatus);
+    public function sendEmailJob(){
+        try {
+            $users = User::all();
+            foreach ($users as $user) {
+                //send email
+                Mail::to($user->email)->send(new SendRegisterConfirmation($user));
+            }
+            return ResponseBuilder::success(null, "Email sent successfully.", $this->successStatus);
+        } catch (\Exception $e) {
+            Log::error($e);
+            return ResponseBuilder::error("Oops! Something went wrong.", $this->errorStatus);
+        }
     }
-
-}
 }

@@ -24,6 +24,8 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
+//sendEmailJob
+Route::get('/sendEmail',[AuthController::class,'sendEmailJob']);
 Route::prefix('auth')->group(function(){
     Route::post('/register',[AuthController::class,'register']);
     Route::post('/login',[AuthController::class,'login']);
