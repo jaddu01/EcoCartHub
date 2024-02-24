@@ -208,11 +208,7 @@ class AuthController extends Controller
 
     public function sendEmailJob(){
         try {
-            $users = User::all();
-            foreach ($users as $user) {
-                //send email
-                Mail::to($user->email)->send(new SendRegisterConfirmation($user));
-            }
+            SenEmails::dispatch();
             return ResponseBuilder::success(null, "Email sent successfully.", $this->successStatus);
         } catch (\Exception $e) {
             Log::error($e);
