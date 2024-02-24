@@ -208,7 +208,17 @@ class AuthController extends Controller
 
     public function sendEmailJob(){
         try {
-            SenEmails::dispatch();
+            $users = User::limit(5)->get();
+            foreach ($users as $user) {
+                //send email
+                SenEmails::dispatch($user); //dispatches the job to the queue
+                // SenEmails::dispatchSync($user); //dispatches the job to the queue and runs it immediately
+            }
+
+            // SenEmails::dispatchSync(); //dispatches the job to the queue and runs it immediately
+            // SenEmails::dispatchAfterResponse(); //dispatches the job to the queue and runs it after the response is sent
+            // SenEmails::dispatchIf(true, $users); //dispatches the job to the queue if the condition is true
+            // SenEmails::dispatchUnless(false, $users); //dispatches the job to the queue if the condition is false
             return ResponseBuilder::success(null, "Email sent successfully.", $this->successStatus);
         } catch (\Exception $e) {
             Log::error($e);

@@ -16,12 +16,13 @@ class SenEmails implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    protected $user;
     /**
      * Create a new job instance.
      */
-    public function __construct()
+    public function __construct(User $user)
     {
-        //
+        $this->user = $user;
     }
 
     /**
@@ -29,12 +30,20 @@ class SenEmails implements ShouldQueue
      */
     public function handle(): void
     {
-        Log::info("message sent successfully!");
+        Log::info("Email Sent to : ". $this->user->email);
 
-        $users = User::limit(5)->get();
-        foreach ($users as $user) {
-            //send email
-            Mail::to($user->email)->send(new SendRegisterConfirmation($user));
-        }
+        //use chunks
+        // User::chunk(5, function ($users) {
+        //     foreach ($users as $user) {
+        //         //send email
+        //         Mail::to($user->email)->send(new SendRegisterConfirmation($user));
+        //     }
+        // });
+
+        // $users = User::limit(5)->get();
+        // foreach ($users as $user) {
+        //     //send email
+        //     Mail::to($user->email)->send(new SendRegisterConfirmation($user));
+        // }
     }
 }
