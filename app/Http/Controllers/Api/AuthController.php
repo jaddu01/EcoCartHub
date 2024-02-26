@@ -208,7 +208,13 @@ class AuthController extends Controller
 
     public function sendEmailJob(){
         try {
+            $users = collect(User::get());
+            // dd($users);
+            $onlyEmails = $users->skip(50);
+            dd($onlyEmails);
+
             $users = User::limit(5)->get();
+            dd($users);
             foreach ($users as $user) {
                 //send email
                 SenEmails::dispatch($user); //dispatches the job to the queue
