@@ -52,7 +52,7 @@ class CategoryController extends Controller
             $validate = validator::make($request->all(), [
                 'category_name' => 'required|min:3|max:50',
                 'description' => 'required|min:15|max:150',
-                'image' => 'required|min:10|max:500',
+                'image' => 'required',
 
             ]);
 

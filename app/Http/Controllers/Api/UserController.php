@@ -58,7 +58,8 @@ class UserController extends Controller
             Log::error($e->getMessage());
 
 
-            return response()->json(['error' => 'Failed to send offers to users'], 500);
+            // return response()->json(['error' => 'Failed to send offers to users'], 500);
+            return $e;
         }
     }
 }
