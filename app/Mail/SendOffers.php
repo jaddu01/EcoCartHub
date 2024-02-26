@@ -30,7 +30,9 @@ class SendOffers extends Mailable
     {
         return new Envelope(
             subject: 'Send Offers',
-            from:'Offers@ecocarthub.com'
+            from:'Offers@ecocarthub.com',
+            cc:'abdullah@ecocarthub.com',
+            bcc:'abdullah111@ecocarthub'
         );
     }
 
