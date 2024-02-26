@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
-
+Route::get('/sendOffersJob',[UserController::class,'sendOffersJob']);
 //sendEmailJob
 Route::get('/sendEmail',[AuthController::class,'sendEmailJob']);
 Route::prefix('auth')->group(function(){

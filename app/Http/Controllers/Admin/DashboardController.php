@@ -16,6 +16,7 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         try {
+            app()->setLocale('ar');
             $users = User::count();
 
             $products = $this->product();

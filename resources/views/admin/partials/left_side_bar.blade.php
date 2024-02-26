@@ -33,7 +33,7 @@
                     <a href="{{ route('admin.dashboard') }}" class="nav-link">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>
-                            Dashboard
+                            {{-- {{ __('leftsidebar.dashboard') }} --}} Dashboard
                         </p>
                     </a>
                 </li>
@@ -42,7 +42,7 @@
                     <a href="{{ route('admin.users') }}" class="nav-link">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
-                            Users
+                            {{ _('leftsidebar.users') }}
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
@@ -50,13 +50,13 @@
                         <li class="nav-item">
                             <a href="{{ route('admin.users.add') }}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Add New</p>
+                                <p>{{ _('leftsidebar.add_new') }}</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('admin.users') }}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>View All</p>
+                                <p>{{ _('leftsidebar.view_all') }}</p>
                             </a>
                         </li>
                     </ul>
@@ -65,7 +65,7 @@
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>
-                            Products
+                            {{ _('leftsidebar.products') }}
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
@@ -73,13 +73,13 @@
                         <li class="nav-item">
                             <a href="{{ route('admin.products.add') }}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Add New</p>
+                                <p>{{ _('leftsidebar.add_new') }}</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('admin.products') }}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>View All</p>
+                                <p>{{ _('leftsidebar.view_all') }}</p>
                             </a>
                         </li>
                     </ul>
@@ -88,7 +88,7 @@
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
-                            Orders
+                            {{ _('leftsidebar.orders') }}
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
@@ -96,13 +96,13 @@
                         <li class="nav-item">
                             <a href="{{ route('admin.users.add') }}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Add New</p>
+                                <p>{{ _('leftsidebar.add_new') }}</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('admin.orders') }}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>View All</p>
+                                <p>{{ _('leftsidebar.view_all') }}</p>
                             </a>
                         </li>
                     </ul>
@@ -111,7 +111,7 @@
                     <a href="{{ route('admin.categories') }}" class="nav-link">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
-                            Categories
+                            {{ _('leftsidebar.categories') }}
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
@@ -119,13 +119,13 @@
                         <li class="nav-item">
                             <a href="{{ route('admin.categories.add') }}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Add New</p>
+                                <p>{{ _('leftsidebar.add_new') }}</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('admin.categories') }}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>View All</p>
+                                <p>{{ _('leftsidebar.view_all') }}</p>
                             </a>
                         </li>
                     </ul>
