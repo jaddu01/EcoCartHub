@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Events\RegisterConfirmed;
+use App\Helpers\CustomHelper;
 use App\Helpers\ResponseBuilder;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
@@ -20,8 +21,10 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Number;
 
 class AuthController extends Controller
 {
@@ -208,13 +211,10 @@ class AuthController extends Controller
 
     public function sendEmailJob(){
         try {
-            $users = collect(User::get());
-            // dd($users);
-            $onlyEmails = $users->skip(50);
-            dd($onlyEmails);
-
+            $sum = CustomHelper::getSum(5, 10);
+            dd($sum);
             $users = User::limit(5)->get();
-            dd($users);
+            // dd($users);
             foreach ($users as $user) {
                 //send email
                 SenEmails::dispatch($user); //dispatches the job to the queue
