@@ -37,7 +37,8 @@ class SendOffersJob implements ShouldQueue
         $users = User::limit(5)->get();
         foreach ($users as $user) {
         //send email
-        Mail::to($user->email)->send(new MailSendOffers());
+        // Mail::to($user->email)->send(new MailSendOffers());
+        Log::info('Email Sent');
         }
 
     }

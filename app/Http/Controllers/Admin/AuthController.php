@@ -56,4 +56,5 @@ class AuthController extends Controller
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
+
 }

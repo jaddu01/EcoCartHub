@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Jobs\SendOffersJob;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Models\User;
 
 class Kernel extends ConsoleKernel
 {
@@ -14,7 +15,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('custom:query')->everyFiveSeconds();
+        // $schedule->command('custom:query')->everyFiveSeconds();
+        $schedule->job(new SendOffersJob)->everyFiveSeconds();
+        // $schedule->command('send:offers')->everyFiveMinutes();
     }
 
     /**

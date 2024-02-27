@@ -2,32 +2,32 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\SendOffersJob;
+use App\Models\User;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
+use App\Mail\SendOffers;
 
-class CustomQuery extends Command
+class EmailSend extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'custom:query';
+    protected $signature = 'send:offers';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Custom query';
+    protected $description = 'Command description';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        $this->info('Custom Query started........');
-        DB::statement("UPDATE users SET country_code = '+971'");
-        $this->info('Custom Query Executed Successfully');
+        SendOffersJob::dispatch();
     }
 }
