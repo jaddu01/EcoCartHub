@@ -31,21 +31,28 @@ class EmailDueNotification implements ShouldQueue
      */
     public function handle(): void
     {
-        $tasks = Task::with('users')->get();
+        // $tasks = Task::with('users')->get();
 
 
-        foreach($tasks as $task){
-            if(Carbon::parse($task->due_date)->isToday()
-            ){
+        // foreach ($tasks as $task) {
+        //     if (Carbon::parse($task->due_date)->isToday()) {
 
-                if($task->status=='due'){
-                    foreach($task->users as $user){
-                    Log::info('Due Date Reminder Email sent to'.$user->email);
-                    }
+        //         if ($task->status == 'due') {
+        //             foreach ($task->users as $user) {
+        //                 Log::info('Due Date Reminder Email sent to' . $user->email);
+        //             }
+        //         }
+        //     }
+        // }
 
+        //use chunk
+        Task::with('users')->where('status', 'due')->whereDate('due_date', Carbon::now()->toDateString())->chunk(100, function ($tasks) {
+            foreach ($tasks as $task) {
+                foreach ($task->users as $user) {
+                    // Mail::to($user->email)->send(new SendDueNotification($task));
+                    Log::info('Due Date Reminder Email sent to' . $user->email);
+                }
             }
-        }
-
-    }
+        });
     }
 }
