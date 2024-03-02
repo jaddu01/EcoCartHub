@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Admin\{AuthController,DashboardController,OrderController, UsersController,ProductController,CategoryController};
+use App\Http\Controllers\Admin\{AuthController,DashboardController,OrderController, UsersController,ProductController,CategoryController,TaskController};
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [AuthController::class, 'index'])->name('admin.index');
@@ -66,4 +66,14 @@ Route::middleware('admin.auth')->group(function(){
 
 
     Route::get('logout', [AuthController::class, 'logout'])->name('admin.logout');
+
+
+    Route::prefix('tasks')->group(function(){
+        Route::get('/', [TaskController::class, 'index'])->name('user.tasks');
+        Route::get('/createTask',[TaskController::class,'createTask'])->name('user.create');
+        Route::post('/store', [TaskController::class, 'store'])->name('user.tasks.store');
+        Route::get('/edit/{id}', [TaskController::class, 'edit'])->name('user.tasks.edit');
+        Route::post('/update/{id}', [TaskController::class, 'update'])->name('user.tasks.update');
+        Route::delete('/delete/{id}', [TaskController::class, 'delete'])->name('user.tasks.delete');
+    });
 });

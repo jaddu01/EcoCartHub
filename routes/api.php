@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\OrdersController;
+use App\Http\Controllers\Api\TaskController;
+
 use App\Models\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -100,4 +102,5 @@ Route::middleware('api.verify')->group(function(){
 
 
     });
+
 });

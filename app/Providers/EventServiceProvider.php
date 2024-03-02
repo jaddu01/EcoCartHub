@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Events\DueTask;
 use App\Events\OrderConfirmed;
+use App\Listeners\SendDueEmail;
 use App\Listeners\SendEmailOrderConfirmed;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -22,6 +24,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         OrderConfirmed::class => [
             SendEmailOrderConfirmed::class,
+        ],
+        DueTask::class => [
+            SendDueEmail::class,
         ],
     ];
 
