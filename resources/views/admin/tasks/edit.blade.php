@@ -54,7 +54,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="due_date">Due Date</label>
-                                <input type="date" name="due_date" value="{{ old('due_date',$task->due_date) }}" class="form-control" id="due_date">
+                                <input type="date" name="due_date" value="{{ old('due_date', Carbon\Carbon::parse($task->due_date)->toDateString()) }}" class="form-control" id="due_date">
                             </div>
                             <div class="form-group">
                                 <label for="priority_level">Priority Level (1-8)</label>

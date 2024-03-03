@@ -73,7 +73,7 @@
                                 <tr>
                                     <td>{{ $task->title }}</td>
                                     <td>{{ $task->description }}</td>
-                                    <td>{{ $task->due_date }}</td>
+                                    <td>{{ Carbon\Carbon::parse($task->due_date)->toDateString() }}</td>
                                     <td>{{ $task->priority_level }}</td>
                                     <td class="status-{{ $task->status }}">{{ ucfirst($task->status) }}</td>
                                     <td>
