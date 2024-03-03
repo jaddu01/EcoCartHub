@@ -20,9 +20,10 @@ class Kernel extends ConsoleKernel
         // $schedule->command('custom:query')->everyFiveSeconds();
         // $schedule->job(new SendOffersJob)->everyFiveSeconds();
         // $schedule->command('send:offers')->everyFiveMinutes();
-        $schedule->command('task:watcher')->everyFiveSeconds();
-        $schedule->job(new EmailDueNotification)->everyFiveSeconds();
-        $schedule->command('upcoming:task')->everyFiveSeconds();
+        // $schedule->command('task:watcher')->everyFiveSeconds();
+        // $schedule->job(new EmailDueNotification)->everyFiveSeconds();
+        // $schedule->command('upcoming:task')->everyFiveSeconds();
+        $schedule->command('completed:tasks')->everyFiveSeconds();
     }
 
     /**
