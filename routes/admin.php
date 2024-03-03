@@ -75,5 +75,6 @@ Route::middleware('admin.auth')->group(function(){
         Route::get('/edit/{id}', [TaskController::class, 'edit'])->name('user.tasks.edit');
         Route::post('/update/{id}', [TaskController::class, 'update'])->name('user.tasks.update');
         Route::delete('/delete/{id}', [TaskController::class, 'delete'])->name('user.tasks.delete');
+        Route::get('/tasks/{status}', [TaskController::class, 'filterByStatus'])->name('user.tasks.status');
     });
 });

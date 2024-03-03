@@ -7,6 +7,7 @@ use App\Helpers\ResponseBuilder;
 use App\Http\Controllers\Controller;
 use App\Models\Task;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -24,6 +25,35 @@ class TaskController extends Controller
     // Pass the tasks to the view
     return view('admin.tasks.index', compact('tasks'));
 }
+
+
+public function filterByStatus($status)
+    {
+        switch ($status) {
+            case 'upcoming':
+                $tasks = Task::with('users')->where('due_date','>',Carbon::today())
+                ->where('due_date','<=',Carbon::tomorrow())->where('status', 'due')->get();
+                break;
+            case 'completed':
+                $tasks = Task::with('users:id')->where('status', 'completed')->latest()->get();
+                break;
+            case 'overdue':
+                $tasks = Task::with('users:id')->where('status','overdue')->latest()->get();
+                break;
+            case 'pending':
+                $tasks = Task::with('users:id')->where('status', 'pending')->latest()->get();
+                break;
+            case 'canceled':
+                $tasks = Task::with('users:id')->where('status', 'canceled')->latest()->get();
+                break;
+            default:
+                $tasks = Task::with('users:id')->latest()->get();
+                break;
+        }
+
+        return view('admin.tasks.index', compact('tasks'));
+    }
+
     public function createTask(){
         return view('admin.tasks.create');
     }
