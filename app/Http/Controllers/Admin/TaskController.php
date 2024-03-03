@@ -92,6 +92,7 @@ class TaskController extends Controller
             $task->update($data);
 
             DB::commit();
+            event(new DueTask($task));
             return redirect()->route('user.tasks')->with('success','Task has updated successfully');
 
         }catch(Exception $e){
