@@ -32,7 +32,7 @@ class UsersController extends Controller
 
             DB::commit();
 
-            return redirect()->route('admin.users')->with('Success','User added successfully');
+            return redirect()->route('admin.users')->with('Success',__('user.added_success'));
 
 
         }catch(\Exception $e){

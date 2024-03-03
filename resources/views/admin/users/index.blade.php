@@ -11,6 +11,7 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1>Users</h1>
+                    <p>{{ __('user.added_success', ['name' => 'Categories']) }}</p>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
