@@ -4,12 +4,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">{{ __('Dashboard.Dashboard') }}</h1>
+                    <h1 class="m-0">{{ __('dashboard.Dashboard') }}</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">{{ __('Dashboard.Dashboard') }}</li>
+                        <li class="breadcrumb-item active">{{ __('dashboard.Dashboard') }}</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -22,7 +22,7 @@
                     <div class="info-box">
                         <span class="info-box-icon bg-info elevation-1"><i class="fas fa-users"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text">{{ __('Dashboard.total_users') }}</span>
+                            <span class="info-box-text">{{ __('dashboard.total_users') }}</span>
                             <a href="{{ route('admin.users') }}" class="nav-link">
                                 <span class="info-box-number">
                                     {{ $users }}
@@ -39,7 +39,7 @@
                         <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-thumbs-up"></i></span>
 
                         <div class="info-box-content">
-                            <span class="info-box-text">{{ __('Dashboard.total_products') }}</span>
+                            <span class="info-box-text">{{ __('dashboard.total_products') }}</span>
                             <a href="{{ route('admin.products') }}" class="nav-link">
                             <span class="info-box-number">{{ $totalProducts }}</span>
                             </a>
@@ -58,7 +58,7 @@
                         <span class="info-box-icon bg-success elevation-1"><i class="fas fa-shopping-cart"></i></span>
 
                         <div class="info-box-content">
-                            <span class="info-box-text">{{ __('Dashboard.total_products') }}</span>
+                            <span class="info-box-text">{{ __('dashboard.total_products') }}</span>
                             <span class="info-box-number">760</span>
                         </div>
                         <!-- /.info-box-content -->
@@ -71,7 +71,7 @@
                         <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
 
                         <div class="info-box-content">
-                            <span class="info-box-text">{{ __('Dashboard.pending_orders') }}</span>
+                            <span class="info-box-text">{{ __('dashboard.pending_orders') }}</span>
                             <span class="info-box-number">2,000</span>
                         </div>
                         <!-- /.info-box-content -->
@@ -84,7 +84,7 @@
                 <div class="col-md-8">
                     <div class="card">
                         <div class="card-header border-transparent">
-                            <h3 class="card-title">{{ __('Dashboard.latest_products') }}</h3>
+                            <h3 class="card-title">{{ __('dashboard.latest_products') }}</h3>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body p-0">
@@ -92,11 +92,11 @@
                                 <table class="table m-0">
                                     <thead>
                                         <tr>
-                                            <th>{{ __('Dashboard.product_name') }}</th>
-                                            <th>{{ __('Dashboard.price') }}</th>
-                                            <th>{{ __('Dashboard.brand') }}</th>
-                                            <th>{{ __('Dashboard.color') }}</th>
-                                            <th>{{ __('Dashboard.quantity') }}</th>
+                                            <th>{{ __('dashboard.product_name') }}</th>
+                                            <th>{{ __('dashboard.price') }}</th>
+                                            <th>{{ __('dashboard.brand') }}</th>
+                                            <th>{{ __('dashboard.color') }}</th>
+                                            <th>{{ __('dashboard.quantity') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>

@@ -44,7 +44,7 @@
                                     <b>Username</b> <a class="float-right">{{ $user->username }}</a>
                                 </li>
                                 <li class="list-group-item">
-                                    <b>Member Since</b> <a class="float-right">{{ $user->email_verified_at }}</a>
+                                    <b>Member Since</b> <a class="float-right">{{ Carbon\Carbon::parse($user->created_at)->diffForHumans() }}</a>
                                 </li>
                             </ul>
                         </div>
