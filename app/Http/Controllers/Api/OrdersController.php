@@ -15,6 +15,7 @@ use Illuminate\Validation\Rule;
 use App\Models\Order;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class OrdersController extends Controller
 {
@@ -36,6 +37,9 @@ class OrdersController extends Controller
 
     //place order
     public function placeOrder(Request $request){
+
+
+
         try{
             $user = $request->user('api');
 
@@ -85,6 +89,7 @@ class OrdersController extends Controller
 
     //order info
     public function view(Request $request){
+
         try{
             $user = $request->user('api');
             $orderId = request('order_id');

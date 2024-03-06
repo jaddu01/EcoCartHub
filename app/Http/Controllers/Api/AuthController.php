@@ -78,7 +78,9 @@ class AuthController extends Controller
     //login
     public function login(Request $request)
     {
+
         try {
+
             $validator = Validator::make($request->all(), [
                 'email' => 'required|string|max:50',
                 'password' => 'required|string|min:8|max:50',
@@ -210,9 +212,10 @@ class AuthController extends Controller
     }
 
     public function sendEmailJob(){
+
         try {
-            $sum = CustomHelper::getSum(5, 10);
-            dd($sum);
+            $slice = Str::beforeLast('This is my name', 'is');
+            dd($slice);
             $users = User::limit(5)->get();
             // dd($users);
             foreach ($users as $user) {

@@ -59,7 +59,6 @@ class UserController extends Controller
 
 
             // return response()->json(['error' => 'Failed to send offers to users'], 500);
-            return $e;
         }
     }
 }
